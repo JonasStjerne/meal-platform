@@ -1,0 +1,28 @@
+﻿<Properties StartupConfiguration="{4D95E0B9-61F0-4479-823C-95FFE7EA160A}|Default">
+  <MonoDevelop.Ide.ItemProperties.P3 FirstBuild="True" PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="P3/Startup.cs">
+    <Files>
+      <File FileName="P3/appsettings.json" Line="1" Column="1" />
+      <File FileName="P3/Program.cs" Line="1" Column="1" />
+      <File FileName="P3/Startup.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="P3" expanded="True">
+            <Node name="P3" expanded="True">
+              <Node name="Pages" expanded="True" />
+              <Node name="Startup.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
