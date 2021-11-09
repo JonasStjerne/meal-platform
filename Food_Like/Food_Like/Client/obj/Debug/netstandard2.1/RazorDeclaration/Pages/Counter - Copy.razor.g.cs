@@ -4,7 +4,7 @@
 #pragma warning disable 0649
 #pragma warning disable 0169
 
-namespace Food_Like.Client
+namespace Food_Like.Client.Pages
 {
     #line hidden
     using System;
@@ -75,13 +75,27 @@ using Food_Like.Client.Shared;
 #line default
 #line hidden
 #nullable disable
-    public partial class _Imports : System.Object
+    [Microsoft.AspNetCore.Components.RouteAttribute("/counter")]
+    public partial class Counter___Copy : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
-        protected void Execute()
+        protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
         }
         #pragma warning restore 1998
+#nullable restore
+#line 9 "D:\Code\Food_Like\Food_Like\Food_Like\Client\Pages\Counter - Copy.razor"
+       
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+#line default
+#line hidden
+#nullable disable
     }
 }
 #pragma warning restore 1591

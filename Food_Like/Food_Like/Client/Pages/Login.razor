@@ -1,0 +1,19 @@
+﻿@page "/login"
+@using Food_Like.Shared
+@inject HttpClient Http
+
+<h1>Login</h1>
+
+<input @bind="inputEmail" placeholder="Email" />
+<input @bind="inputPassword" placeholder="password" type="password" />
+
+<button class="btn btn-primary" @onclick="login">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    private async void login()
+    {
+        var user = await Http.GetFromJsonAsync<dynamic>("api/getUser");
+    }
+}

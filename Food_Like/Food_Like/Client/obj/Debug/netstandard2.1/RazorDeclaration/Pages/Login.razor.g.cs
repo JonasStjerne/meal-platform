@@ -4,7 +4,7 @@
 #pragma warning disable 0649
 #pragma warning disable 0169
 
-namespace Food_Like.Client
+namespace Food_Like.Client.Pages
 {
     #line hidden
     using System;
@@ -75,13 +75,35 @@ using Food_Like.Client.Shared;
 #line default
 #line hidden
 #nullable disable
-    public partial class _Imports : System.Object
+#nullable restore
+#line 2 "D:\Code\Food_Like\Food_Like\Food_Like\Client\Pages\Login.razor"
+using Food_Like.Shared;
+
+#line default
+#line hidden
+#nullable disable
+    [Microsoft.AspNetCore.Components.RouteAttribute("/login")]
+    public partial class Login : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
-        protected void Execute()
+        protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
         }
         #pragma warning restore 1998
+#nullable restore
+#line 12 "D:\Code\Food_Like\Food_Like\Food_Like\Client\Pages\Login.razor"
+       
+    private int currentCount = 0;
+
+    private async void login()
+    {
+        var user = await Http.GetFromJsonAsync<dynamic>("api/getUser");
+    }
+
+#line default
+#line hidden
+#nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private HttpClient Http { get; set; }
     }
 }
 #pragma warning restore 1591

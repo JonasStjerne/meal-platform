@@ -744,3 +744,5 @@ D:\Code\Food_Like\Food_Like\Food_Like\Client\obj\Debug\netstandard2.1\Food_Like.
 D:\Code\Food_Like\Food_Like\Food_Like\Client\obj\Debug\netstandard2.1\Food_Like.Client.csproj.CopyComplete
 D:\Code\Food_Like\Food_Like\Food_Like\Client\obj\Debug\netstandard2.1\Food_Like.Client.dll
 D:\Code\Food_Like\Food_Like\Food_Like\Client\obj\Debug\netstandard2.1\Food_Like.Client.pdb
+D:\Code\Food_Like\Food_Like\Food_Like\Client\obj\Debug\netstandard2.1\RazorDeclaration\Pages\Login.razor.g.cs
+D:\Code\Food_Like\Food_Like\Food_Like\Client\obj\Debug\netstandard2.1\Razor\Pages\Login.razor.g.cs
