@@ -1,7 +1,18 @@
 ﻿@page "/"
 
-<h1>This is our frontpage</h1>
+<PageTitle>Counter</PageTitle>
 
-Welcome to your new app.
+<h1>Counter</h1>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
