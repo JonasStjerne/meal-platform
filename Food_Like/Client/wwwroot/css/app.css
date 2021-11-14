@@ -1,7 +1,15 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+
+@font-face {
+    font-family: "Omnes";
+    src: url("/css/Omnes-Font/@font-face/omnes.eot");
+    src: url("/css/Omnes-Font/@font-face/omnes.woff") format("woff"), url("/css/Omnes-Font/@font-face/omnes.woff2") format("woff2"), url("/css/Omnes-Font/@font-face/omnes.ttf") format("ttf");
+}
+
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Omnes', Helvetica, Arial, sans-serif;
 }
 
 a, .btn-link {
@@ -10,8 +18,13 @@ a, .btn-link {
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: #319CFF;
+    border-color: #319CFF;
+}
+.btn-secondary {
+    color: #319CFF;
+    background-color: #fff;
+    border: 2px solid #319CFF;
 }
 
 app {
@@ -267,3 +280,7 @@ h3 {
     background: #C4C4C4;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+
+
+
+

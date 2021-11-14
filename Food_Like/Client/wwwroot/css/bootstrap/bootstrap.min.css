@@ -8,7 +8,7 @@
     --dark: #1B1B1B;
     --highlight: #319CFF;
     --secondaryBg: #D6F0AA;
-    --secondary: #EAEAEA;
+    --secondaryf: #EAEAEA;
     --MainBg: #FCFAE8;
     --blue: #007bff;
     --indigo: #6610f2;
@@ -23,7 +23,8 @@
     --white: #fff;
     --gray: #6c757d;
     --gray-dark: #343a40;
-    --primary: #007bff;
+    --primary: #319CFF;
+    --secondary: #FFFFFF;
     --success: #28a745;
     --info: #17a2b8;
     --warning: #ffc107;

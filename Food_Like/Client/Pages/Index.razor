@@ -1,18 +1,326 @@
 ﻿@page "/"
+@inject IJSRuntime JS
+@layout IndexLayout
 
-<PageTitle>Counter</PageTitle>
+<style>
 
-<h1>Counter</h1>
+       .centerdiv {
+        display: flex;
+        justify-content: center;
+        margin: 5px;
+    }
 
-<p role="status">Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+    .card-img-top{
+        width:135px;
+        height:97px;
+    }
+
+    .fixedbutton {
+        width: 190px;
+        height: 56px;
+    }
+
+    div.fixedbutton > a {
+        font-style: normal;
+        font-weight: bold;
+        font-size: 24px;
+        line-height: 30px;
+    }
+
+    div.fixedbutton > a:link {
+        text-decoration-line:none;
+    }
+
+    .carousel .carousel-indicators li {
+        background-color: #C4C4C4;
+        border-radius: 50%;
+        width: 8px;
+        height: 8px;
+    }
+
+        .carousel .carousel-indicators li.active {
+            background-color: #319CFF;
+            border-radius: 50%;
+            width: 8px;
+            height: 8px;
+        }
+
+    .buyerbtn {
+        height: 34px;
+        width: 117px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 30px;
+        text-align: center;
+        letter-spacing: -0.01em;
+    }
+
+    .sellerbtn {
+        height: 34px;
+        width: 117px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 30px;
+        text-align: center;
+        letter-spacing: -0.01em;
+    }
+
+</style>
+
+<div class="signin">
+    <div class="centerdiv">
+        <div class="fixedbutton">
+            <a href="login" class="btn btn-primary btn-block">Login</a>
+        </div>
+    </div>
+
+    <div class="centerdiv">
+        <div class="fixedbutton">
+            <a href="login" class="btn btn-secondary btn-block">Sign up</a>
+        </div>
+    </div>
+ </div>
+
+
+
+<!-- Carousel wrapper -->
+<div id="carouselMultiItemExample"
+     class="carousel slide carousel-dark text-center"
+     data-mdb-ride="carousel">
+    <!-- Controls -->
+    <div class="d-flex justify-content-center mb-4">
+        <a class="carousel-control-prev" href="#carouselMultiItemExample" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselMultiItemExample" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+
+
+    <!-- Inner -->
+    <div class="carousel-inner py-4">
+        <!-- Single item -->
+
+        @{
+            string active = "active";
+        }
+
+        @for (var row = 0; row < cards.Count / 3; row++)
+        {
+            <div class="carousel-item @active">
+                <div class="container">
+                    <div class="row" style="flex-wrap:nowrap; justify-content:center;">
+
+
+                        @for (var col = 0; col < 3; col++)
+                        {
+                            MealCard meal = cards[row * 3 + col];
+                            <div class="col-lg-4">
+                                
+                                    <img src="@meal.image"
+                                         class="card-img-top"
+                                         alt="..." />
+                                        <p class="card-title">@meal.titel</p>
+                                    
+                                
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            active = "";
+        }
+
+
+    </div>
+    <!-- Inner -->
+</div>
+<!-- Carousel wrapper -->
+
+
+
+
+
+
+
+
+
+
+<div class="concept">
+
+    <h2 class="centerdiv">How it works</h2>
+
+    <div class="centerdiv">
+        <button class="btn @(buyerClass) buyerbtn" @onclick="SelectBuyerMode">Buyer</button>
+        <button class="btn @(sellerClass) sellerbtn" @onclick="SelectSellerMode">Seller</button>
+    </div>
+
+
+    <div id="carouselExampleCaptions" class="carousel slide">
+
+        <div class="carousel-inner">
+
+            @{
+                active = "active";
+                int stepnumber = 1;
+            }
+            @foreach (var c in concepts)
+            {
+                <div class="carousel-item @(active)">
+
+
+                    <div class="column">
+                        <div class="centerdiv">
+                            <img src="@(c.image)" class="d-block" style="height:99px; width:99px; padding-top:10px;" alt="">
+                        </div>
+
+                        <div class="centerdiv">
+                            <h3> Step @(stepnumber)</h3>
+                            </div>
+                        <div class="centerdiv">
+                            <p>@(c.label)</p>
+                        </div>
+                    </div>
+
+
+                </div>
+                active = "";
+                stepnumber++;
+            }
+
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+
+        <ol class="carousel-indicators" style="position:unset;">
+            <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+            <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+        </ol>
+    </div>
+
+</div>
+
+
+
 
 @code {
-    private int currentCount = 0;
 
-    private void IncrementCount()
+    // Mealcard carousel start
+    private class MealCard
     {
-        currentCount++;
+        public string image;
+        public string titel;
+        public MealCard(string i, string t)
+        {
+            image = i;
+            titel = t;
+        }
     }
+
+    private static List<MealCard> cards = new List<MealCard>();
+
+    // Mealcard carousel end
+
+
+
+    // Concept carousel start
+
+    private class Concept
+    {
+        public string image;
+        public string label;
+        public Concept(string i, string l)
+        {
+            image = i;
+            label = l;
+        }
+    }
+
+    private const string PrimaryBtn = "btn-primary";
+    private const string SecondaryBtn = "btn-secondary";
+
+    private bool buyerMode = true;
+    private string buyerClass = PrimaryBtn;
+    private string sellerClass = SecondaryBtn;
+
+    private static Concept[] buyerConcepts = {
+        new Concept("/assets/browsemeal.png", "Browse local meals"),
+        new Concept("/assets/reservemeal.png", "Reserve meal"),
+        new Concept("/assets/pickup.png", "Bring foodcontainer and pay with Mobilepay"),
+    };
+
+    private static Concept[] sellerConcepts = {
+        new Concept("/assets/createmeal.png", "Put meal up for sale"),
+        new Concept("/assets/makemeal.png", "Make meal"),
+        new Concept("/assets/money.png", "Give meal to buyer"),
+    };
+
+    private Concept[] concepts = buyerConcepts;
+
+    private void SelectBuyerMode()
+    {
+        buyerMode = true;
+        buyerClass = PrimaryBtn;
+        sellerClass = SecondaryBtn;
+        concepts = buyerConcepts;
+        resetCarousel("#carouselExampleCaptions");
+    }
+
+    private void SelectSellerMode()
+    {
+        buyerMode = false;
+        buyerClass = SecondaryBtn;
+        sellerClass = PrimaryBtn;
+        concepts = sellerConcepts;
+        resetCarousel("#carouselExampleCaptions");
+    }
+
+    protected async override void OnInitialized()
+    {
+        cards.Add(new MealCard("/assets/Spaghettichicken.png", "Spaghetti w/ chicken"));
+        cards.Add(new MealCard("/assets/SpaghettiMeatballs.png", "Spaghetti & Meatballs"));
+        cards.Add(new MealCard("/assets/Spaghettibeef.png", "Spaghetti w/ beef"));
+        cards.Add(new MealCard("/assets/Spaghettichicken.png", "Spaghetti w/ chicken"));
+        cards.Add(new MealCard("/assets/SpaghettiMeatballs.png", "Spaghetti & Meatballs"));
+        cards.Add(new MealCard("/assets/Spaghettibeef.png", "Spaghetti w/ beef"));
+        cards.Add(new MealCard("/assets/Spaghettichicken.png", "Spaghetti w/ chicken"));
+        cards.Add(new MealCard("/assets/SpaghettiMeatballs.png", "Spaghetti & Meatballs"));
+        cards.Add(new MealCard("/assets/Spaghettibeef.png", "Spaghetti w/ beef"));
+        cards.Add(new MealCard("/assets/Spaghettichicken.png", "Spaghetti w/ chicken"));
+
+        await JS.InvokeVoidAsync("startCarousel", "#carouselExampleCaptions");
+    }
+
+    private async Task resetCarousel(string id)
+    {
+        await JS.InvokeVoidAsync("resetCarousel", id);
+    }
+
+    // Concept carousel end
+
+
+
+
+
+
+
+
 }
