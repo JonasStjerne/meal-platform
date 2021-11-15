@@ -6,8 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
-using Food_Like.Server.Models;
-
+using Food_Like.Server.Services;
 namespace Food_Like.Server
 {
     public class Startup
@@ -26,7 +25,6 @@ namespace Food_Like.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-            services.Add(new ServiceDescriptor(typeof(DbContext), new DbContext(Configuration.GetConnectionString("DefaultConnection"))));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
