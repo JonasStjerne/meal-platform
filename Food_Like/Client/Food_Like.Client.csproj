@@ -18,18 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\css\Omnes-Font\Omnes\Omnes.ttf">
-      <Link>wwwroot\css\Omnes\Omnes.ttf</Link>
-    </Content>
-    <Content Update="wwwroot\css\Omnes-Font\%40font-face\07dc45de3c2d37fcd503045055b2253b.woff">
-      <Link>wwwroot\css\%40font-face\07dc45de3c2d37fcd503045055b2253b.woff</Link>
-    </Content>
-    <Content Update="wwwroot\css\Omnes-Font\%40font-face\07dc45de3c2d37fcd503045055b2253b.eot">
-      <Link>wwwroot\css\%40font-face\07dc45de3c2d37fcd503045055b2253b.eot</Link>
-    </Content>
-    <Content Update="wwwroot\css\Omnes-Font\%40font-face\07dc45de3c2d37fcd503045055b2253b.woff2">
-      <Link>wwwroot\css\%40font-face\07dc45de3c2d37fcd503045055b2253b.woff2</Link>
-    </Content>
+    <Content Remove="wwwroot\css\Omnes-Font\Omnes\Omnes.ttf" />
+    <Content Remove="wwwroot\css\Omnes-Font\%40font-face\07dc45de3c2d37fcd503045055b2253b.woff" />
+    <Content Remove="wwwroot\css\Omnes-Font\%40font-face\07dc45de3c2d37fcd503045055b2253b.eot" />
+    <Content Remove="wwwroot\css\Omnes-Font\%40font-face\07dc45de3c2d37fcd503045055b2253b.woff2" />
+    <Content Remove="wwwroot\css\Omnes-Font\%40font-face\07dc45de3c2d37fcd503045055b2253b.ttf" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Update="wwwroot\css\Omnes-Font\%40font-face\omnes.eot">
       <Link>wwwroot\css\%40font-face\omnes.eot</Link>
     </Content>
@@ -38,9 +33,6 @@
     </Content>
     <Content Update="wwwroot\css\Omnes-Font\%40font-face\omnes.woff">
       <Link>wwwroot\css\%40font-face\omnes.woff</Link>
-    </Content>
-    <Content Update="wwwroot\css\Omnes-Font\%40font-face\07dc45de3c2d37fcd503045055b2253b.ttf">
-      <Link>wwwroot\css\%40font-face\07dc45de3c2d37fcd503045055b2253b.ttf</Link>
     </Content>
     <Content Update="wwwroot\css\Omnes-Font\%40font-face\omnes.ttf">
       <Link>wwwroot\css\%40font-face\omnes.ttf</Link>

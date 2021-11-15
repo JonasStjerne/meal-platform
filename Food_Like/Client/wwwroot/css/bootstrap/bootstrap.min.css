@@ -5,6 +5,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 :root {
+    --black:#000000;
     --dark: #1B1B1B;
     --highlight: #319CFF;
     --secondaryBg: #D6F0AA;

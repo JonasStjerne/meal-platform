@@ -14,4 +14,10 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <None Remove="db\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="db\" />
+  </ItemGroup>
 </Project>

@@ -1,15 +1,9 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-
-
-@font-face {
-    font-family: "Omnes";
-    src: url("/css/Omnes-Font/@font-face/omnes.eot");
-    src: url("/css/Omnes-Font/@font-face/omnes.woff") format("woff"), url("/css/Omnes-Font/@font-face/omnes.woff2") format("woff2"), url("/css/Omnes-Font/@font-face/omnes.ttf") format("ttf");
-}
+@import url("https://use.typekit.net/rkz8vhb.css");
 
 
 html, body {
-    font-family: 'Omnes', Helvetica, Arial, sans-serif;
+    font-family: 'omnes-cond', Helvetica, Arial, sans-serif;
 }
 
 a, .btn-link {
@@ -197,18 +191,18 @@ app {
 }
 
 H1 {
-    font-family: Omnes;
+    font-family: omnes-semicond;
     font-style: normal;
     font-weight: bold;
     font-size: 36px;
     line-height: 45px;
     /* identical to box height */
     letter-spacing: -0.01em;
-    color: #000000;
+    color: var(--black);
 }
 
 p {
-    font-family: Omnes;
+    font-family: omnes-semicond;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -220,29 +214,29 @@ p {
 
 
 H2 {
-    font-family: Omnes;
+    font-family: omnes-semicond;
     font-style: normal;
     font-weight: 600;
     font-size: 24px;
     line-height: 30px;
     /* identical to box height */
     letter-spacing: -0.01em;
-    color: #000000;
+    color: var(--black);
 }
 
 small {
-    font-family: Omnes;
+    font-family: omnes-semicond;
     font-style: normal;
     font-weight: 500;
     font-size: 10px;
     line-height: 12px;
     /* identical to box height */
     letter-spacing: -0.01em;
-    color: #000000;
+    color: var(--black);
 }
 
 a {
-    font-family: Omnes;
+    font-family: omnes-semicond;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -250,29 +244,29 @@ a {
     /* identical to box height */
     letter-spacing: -0.01em;
     text-decoration-line: underline;
-    color: #000000;
+    color: var(--black);
 }
 
 p.bold {
-    font-family: Omnes;
+    font-family: omnes-semicond;
     font-style: normal;
     font-weight: bold;
     font-size: 14px;
     line-height: 17px;
     /* identical to box height */
     letter-spacing: -0.01em;
-    color: #000000;
+    color: var(--black);
 }
 
 h3 {
-    font-family: Omnes;
+    font-family: omnes-semicond;
     font-style: normal;
     font-weight: 600;
     font-size: 18px;
     line-height: 22px;
     /* identical to box height */
     letter-spacing: -0.01em;
-    color: #000000;
+    color: var(--black);
 }
 
 
