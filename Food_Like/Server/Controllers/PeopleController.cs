@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Food_Like.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class PeopleController : ControllerBase
     {
         [HttpGet]
