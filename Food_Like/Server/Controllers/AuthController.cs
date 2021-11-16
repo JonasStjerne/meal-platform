@@ -19,14 +19,14 @@ namespace Food_Like.Server.Controllers
         {
             using (var context = new FoodLikeContext())
             {
-                var user = context.Buyer.ToList().Find(user => user.Email == request.Email);
-                if (user != null && user.Password == request.Password)
+                var user = new UserService(context).GetUser(request);
+                if (user != null)
                 {
                     return new LoginResponse
                     {
                         Sucess = true,
-                        Token = String.Format("{0}.{1}", user.Email, user.Password),
-                        User = user as Buyer
+                        Token = String.Format("{0}-.-{1}", user.Email, user.Password),
+                        User = user
                     };
                 } else
                 {
@@ -38,5 +38,55 @@ namespace Food_Like.Server.Controllers
             }
                 
         }
+
+        [HttpPost("create")]
+        public LoginResponse Create(Buyer request)
+        {
+            using (var context = new FoodLikeContext())
+            {
+                if (!new UserService(context).UserExists(request))
+                {
+                    try
+                    {
+                        context.Buyer.Add(request);
+                        context.SaveChanges();
+                        return new LoginResponse
+                        {
+                            Sucess = true,
+                            Token = String.Format("{0}-.-{1}", request.Email, request.Password),
+                            User = request
+                        };
+                    } 
+                    catch
+                    {
+                        return new LoginResponse
+                        {
+                            Sucess = false,
+                        };
+                    }
+                    
+                } else
+                {
+                    return new LoginResponse
+                    {
+                        Sucess = false,
+                    };
+                }
+                
+                
+            }
+
+        }
+
+        //Only needed if we hash information to localstorage and need to verify that
+
+        //[HttpPost("authorize")]
+        //public AuthorizeResponse Authorize(AuthorizeRequest request)
+        //{
+        //    using (var context = new FoodLikeContext()) 
+        //    {
+
+        //    }
+        //}
     }
 }

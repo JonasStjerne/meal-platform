@@ -19,5 +19,19 @@ namespace Food_Like.Server.Services
         {
             return _dbContext.Buyer.ToList();
         }
+
+        public bool UserExists(Buyer buyer)
+        {
+            return _dbContext.Buyer.ToList().Any(user => user.Email == buyer.Email);
+        }
+
+        public dynamic GetUser(Buyer buyer)
+        {
+            return _dbContext.Buyer.ToList().Find(user => user.Email == buyer.Email && user.Password == buyer.Password);
+        }
+        public dynamic GetUser(LoginRequest buyer)
+        {
+            return _dbContext.Buyer.ToList().Find(user => user.Email == buyer.Email && user.Password == buyer.Password);
+        }
     }
 }
