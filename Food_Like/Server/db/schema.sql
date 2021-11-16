@@ -1,0 +1,89 @@
+﻿DROP DATABASE IF EXISTS foodlike;
+
+CREATE DATABASE foodlike;
+
+CREATE USER IF NOT EXISTS 'foodlike' @'%' IDENTIFIED WITH mysql_native_password BY 'foodlike';
+GRANT ALL ON foodlike.* TO 'foodlike' @'%';
+
+USE foodlike;
+
+CREATE TABLE Buyer( 
+BuyerId INT NOT NULL AUTO_INCREMENT,
+FirstName VARCHAR(50) NOT NULL,
+LastName VARCHAR(50) NOT NULL,
+Email VARCHAR(100) NOT NULL,
+PhoneNumber VARCHAR(50) NOT NULL,
+ProfilePicture MEDIUMBLOB NOT NULL,
+EncryptedPassword VARCHAR(50) NOT NULL,
+PRIMARY KEY(BuyerId)
+);
+
+CREATE TABLE Address( 
+AddressId INT NOT NULL AUTO_INCREMENT,
+Line1 VARCHAR(255) NOT NULL,
+Line2 VARCHAR(255) NULL,
+City VARCHAR(100) NOT NULL,
+PRIMARY KEY(AddressId)
+);
+
+CREATE TABLE Seller( 
+SellerId INT NOT NULL,
+AddressId INT NOT NULL,
+KitchenPicture MEDIUMBLOB NOT NULL,
+PRIMARY KEY(SellerId),
+FOREIGN KEY (SellerId) REFERENCES Buyer(BuyerId),
+FOREIGN KEY (AddressId) REFERENCES Address(AddressId)
+);
+
+CREATE TABLE Meal( 
+MealId INT NOT NULL AUTO_INCREMENT,
+SellerId INT NOT NULL,
+Titel VARCHAR(50) NOT NULL,
+Portions TINYINT NOT NULL,
+PortionPrice DEC(5,2) NOT NULL,
+MealDescription TEXT NOT NULL,
+Ingridients TEXT NOT NULL,
+CreatedAt DATETIME NOT NULL,
+MealPicture MEDIUMBLOB NOT NULL,
+PRIMARY KEY(MealId),
+FOREIGN KEY (SellerId) REFERENCES Seller(SellerId)
+);
+
+CREATE TABLE Review( 
+ReviewId INT NOT NULL AUTO_INCREMENT,
+BuyerId INT NOT NULL,
+MealId INT NOT NULL,
+Rating TINYINT NOT NULL,
+ReviewDescription TEXT NOT NULL,
+PRIMARY KEY(ReviewId),
+FOREIGN KEY (BuyerId) REFERENCES Buyer(BuyerId),
+FOREIGN KEY (MealId) REFERENCES Meal(MealId)
+);
+
+CREATE TABLE MealOrder( 
+OrderId INT NOT NULL AUTO_INCREMENT,
+BuyerId INT NOT NULL,
+MealId INT NOT NULL,
+PickUpTime DATETIME NOT NULL,
+Quantity TINYINT NOT NULL,
+PRIMARY KEY(OrderId),
+FOREIGN KEY (BuyerId) REFERENCES Buyer(BuyerId),
+FOREIGN KEY (MealId) REFERENCES Meal(MealId)
+);
+
+CREATE TABLE Category( 
+CategoryId INT NOT NULL AUTO_INCREMENT,
+Titel VARCHAR(100) NOT NULL,
+PRIMARY KEY(CategoryId)
+);
+
+CREATE TABLE MealCategory( 
+MealId INT NOT NULL,
+CategoryId INT NOT NULL,
+PRIMARY KEY(MealId, CategoryId),
+FOREIGN KEY (MealId) REFERENCES Meal(MealId),
+FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId)
+);
+
+
+
