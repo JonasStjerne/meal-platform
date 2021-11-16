@@ -1,0 +1,55 @@
+﻿@page "/createaccount"
+@using Food_Like.Shared
+
+<style>
+
+
+    .createbtn {
+        width: 190px;
+        height: 56px;
+    }
+
+    .centerdiv {
+        display: flex;
+        justify-content: center;
+        margin: 5px;
+    }
+
+    .createpicture{
+        height:118px;
+        width:118px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+<div class="createpicture">
+    <a href="createaccount"><img src="/assets/createpicture.png" alt="" ></a>
+</div>
+
+
+<div class="centerdiv">
+    <form class="form-create ">
+        <label for="inputEmail" class="">Email address</label>
+        <input type="email" id="inputEmail" class="form-control mb-2 shadow-sm" placeholder="Email address" required autofocus>
+
+        <label for="inputPassword" class="">Password</label>
+        <input type="password" id="inputPassword" class="form-control mb-2 shadow-sm" placeholder="Password" required>
+
+        
+        <label for="inputFirstname" class="">Firstname</label>
+        <input type="text" id="inputFirstname" class="form-control mb-2 shadow-sm" placeholder="Firstname" required autofocus>
+
+        <label for="inputSurnamee" class="">Surname</label>
+        <input type="text" id="inputSurname" class="form-control mb-2 shadow-sm" placeholder="Surname" required autofocus>
+
+        <label for="inputNumber" class="">Mobile</label>
+        <input type="number" id="inputNumber" class="form-control mb-2 shadow-sm" placeholder="Mobile" required autofocus>
+
+        <button class="mt-4 btn btn-lg btn-primary btn-block createbtn" type="submit">Create</button>
+
+    </form>
+</div>
+
+
+@* Bootstrap 12/11 21 https://getbootstrap.com/docs/4.5/examples/ *@
