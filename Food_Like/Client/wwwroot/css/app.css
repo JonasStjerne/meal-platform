@@ -190,8 +190,8 @@ app {
     }
 }
 
-H1 {
-    font-family: omnes-semicond;
+h1 {
+    font-family: Omnes;
     font-style: normal;
     font-weight: bold;
     font-size: 36px;
