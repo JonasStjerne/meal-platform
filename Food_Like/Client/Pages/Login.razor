@@ -1,5 +1,7 @@
 ﻿@page "/login"
 @using Food_Like.Shared
+@inject NavigationManager NavManager
+@inject HttpClient Http
 
 <style>
 
@@ -17,30 +19,68 @@
         padding: 10px;
         font-size: 16px;
     }
+
     .form-signin .form-control:focus {
         z-index: 2;
     }
+
     .form-signin input[type="email"] {
         margin-bottom: -1px;
         border-bottom-right-radius: 0;
         border-bottom-left-radius: 0;
     }
+
     .form-signin input[type="password"] {
         margin-bottom: 10px;
         border-top-left-radius: 0;
         border-top-right-radius: 0;
     }
-
-
 </style>
 <form class="form-signin">
     <label for="inputEmail" class="sr-only">Email address</label>
-    <input type="email" id="inputEmail" class="form-control mb-2" placeholder="Email address" required autofocus>
+    <input type="email" id="inputEmail" class="form-control mb-2" placeholder="Email address" @bind="email" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-    <button class="mt-4 btn btn-lg btn-primary btn-block" type="submit">Login</button>
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" @bind="password" required>
+    <button class="mt-4 btn btn-lg btn-primary btn-block" @onclick="submitLogin">Login</button>
     <p class="text-center"><NavLink href="#">Forgot</NavLink></p>
 </form>
+@if (errorMessage.Length > 0)
+{
+    <div class="alert alert-danger" role="alert"> 
+        <p>@errorMessage</p>
+    </div>
+}
 
+
+@code {
+    private string email { get; set; }
+    private string password { get; set; }
+    private string errorMessage = "";
+
+
+    private async void submitLogin()
+    {
+        errorMessage = "Test " + email + " " + password;
+        var req = new LoginRequest
+        {
+            Email = email,
+            EncryptedPassword = password
+        };
+
+        var response = await Http.PostAsJsonAsync("api/auth/login", req);
+        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+        if (result.Sucess == true)
+        {
+            errorMessage = "Sucess";
+            //NavManager.NavigateTo("/");
+        }
+        else
+        {
+            errorMessage = "Nope";
+        }
+
+    }
+
+}
 
 @* Bootstrap 12/11 21 https://getbootstrap.com/docs/4.5/examples/ *@

@@ -1,4 +1,6 @@
 ﻿using Food_Like.Server.Models;
+using Food_Like.Server.Services;
+using Food_Like.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,13 +11,17 @@ namespace Food_Like.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PeopleController : ControllerBase
+    public class UserController : ControllerBase
     {
+
         [HttpGet]
-        public async Task<List<People>> getAllPeople()
+        public IEnumerable<Buyer> Get()
         {
-            DbContext context = HttpContext.RequestServices.GetService(typeof(Food_Like.Server.Models.DbContext)) as DbContext;
-            return context.getAllPeople();
+            using (var context = new foodlikeContext())
+            {
+                return context.Buyer.ToList();
+            }
+                
         }
     }
 }
