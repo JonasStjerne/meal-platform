@@ -9,8 +9,8 @@ namespace Food_Like.Server.Services
 {
     public class UserService
     {
-        private readonly FoodLikeContext _dbContext;
-        public UserService(FoodLikeContext dbContext)
+        private readonly foodlikeContext _dbContext;
+        public UserService(foodlikeContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -27,11 +27,11 @@ namespace Food_Like.Server.Services
 
         public dynamic GetUser(Buyer buyer)
         {
-            return _dbContext.Buyer.ToList().Find(user => user.Email == buyer.Email && user.Password == buyer.Password);
+            return _dbContext.Buyer.ToList().Find(user => user.Email == buyer.Email && user.EncryptedPassword == buyer.EncryptedPassword);
         }
         public dynamic GetUser(LoginRequest buyer)
         {
-            return _dbContext.Buyer.ToList().Find(user => user.Email == buyer.Email && user.Password == buyer.Password);
+            return _dbContext.Buyer.ToList().Find(user => user.Email == buyer.Email && user.EncryptedPassword == buyer.EncryptedPassword);
         }
     }
 }

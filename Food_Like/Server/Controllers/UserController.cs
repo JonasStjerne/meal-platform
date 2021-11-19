@@ -17,7 +17,7 @@ namespace Food_Like.Server.Controllers
         [HttpGet]
         public IEnumerable<Buyer> Get()
         {
-            using (var context = new FoodLikeContext())
+            using (var context = new foodlikeContext())
             {
                 return context.Buyer.ToList();
             }

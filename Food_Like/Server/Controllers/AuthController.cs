@@ -17,7 +17,7 @@ namespace Food_Like.Server.Controllers
         [HttpPost("login")]
         public LoginResponse Login(LoginRequest request)
         {
-            using (var context = new FoodLikeContext())
+            using (var context = new foodlikeContext())
             {
                 var user = new UserService(context).GetUser(request);
                 if (user != null)
@@ -25,7 +25,7 @@ namespace Food_Like.Server.Controllers
                     return new LoginResponse
                     {
                         Sucess = true,
-                        Token = String.Format("{0}-.-{1}", user.Email, user.Password),
+                        Token = String.Format("{0}-.-{1}", user.Email, user.EncryptedPassword),
                         User = user
                     };
                 } else
@@ -42,7 +42,7 @@ namespace Food_Like.Server.Controllers
         [HttpPost("create")]
         public LoginResponse Create(Buyer request)
         {
-            using (var context = new FoodLikeContext())
+            using (var context = new foodlikeContext())
             {
                 if (!new UserService(context).UserExists(request))
                 {
@@ -53,7 +53,7 @@ namespace Food_Like.Server.Controllers
                         return new LoginResponse
                         {
                             Sucess = true,
-                            Token = String.Format("{0}-.-{1}", request.Email, request.Password),
+                            Token = String.Format("{0}-.-{1}", request.Email, request.EncryptedPassword),
                             User = request
                         };
                     } 
