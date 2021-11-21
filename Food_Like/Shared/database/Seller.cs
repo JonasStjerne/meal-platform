@@ -21,5 +21,23 @@ namespace Food_Like.Shared
         public virtual Address Address { get; set; }
         public virtual Buyer SellerNavigation { get; set; }
         public virtual ICollection<Meal> Meal { get; set; }
+
+        public decimal Rating
+        {
+            get
+            {
+                if (Meal.Count == 0)
+                {
+                    return -1;
+                }
+                decimal sum = 0;
+                foreach (Meal meal in Meal)
+                {
+                    sum += meal.Rating;
+                }
+                return sum / Meal.Count;
+            }
+        }
+
     }
 }

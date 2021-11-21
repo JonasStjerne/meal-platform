@@ -1,0 +1,229 @@
+﻿@page "/meal/{mealId:int}"
+@layout OuterLayout
+@inject NavigationManager NavigationManager
+@using System.IO;
+@using Food_Like.Shared;
+@inject HttpClient Http
+
+<style>
+    .map-container {
+        overflow: hidden;
+        padding-bottom: 56.25%;
+        position: relative;
+        height: 0;
+    }
+
+        .map-container iframe {
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+        }
+</style>
+
+@if (meal != null)
+{
+
+    <div>
+        <p> @meal.PortionPrice kr</p>
+    </div>
+
+
+
+    <img src="@mealPicSrc" alt="..." />
+
+    <div>
+        <p> @meal.Reserved / @meal.Portions reserved</p>
+        <h1> @meal.Titel </h1>
+        <p> Pickup at @meal.PickupFrom.ToString("HH:mm") - @meal.PickupTo.ToString("HH:mm , dd/MM")</p>
+        <p> @meal.MealDescription</p>
+
+    </div>
+
+
+    <div>
+        <p> @meal.Seller.Address.Line1</p>
+        <img>
+    </div>
+
+    <!--Google map-->
+    <div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 500px">
+        <iframe src="https://maps.google.com/maps?q=@(meal.Seller.Address.Line1),@(meal.Seller.Address.City)&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
+                style="border:0" allowfullscreen></iframe>
+    </div>
+
+    <!--Google Maps-->
+
+    <div>
+        <img src="@sellerPicSrc" alt="@meal.Seller.SellerNavigation.FirstName" class="d-block">
+        <p>@meal.Seller.SellerNavigation.FirstName</p>
+        <p>@rating</p>
+    </div>
+
+    <div>
+        <h3> Ingridients</h3>
+        <ul>
+            @foreach (string item in ingridients)
+            {
+                <li>@item</li>
+            }
+
+        </ul>
+    </div>
+
+
+
+
+
+
+    <div>
+
+        <button type="button" class="btn btn-secondary" @onclick="DecreasePortions"> - </button>
+
+        <span> @portions </span>
+
+        <button type="button" class="btn btn-primary" @onclick="IncreasePortions"> + </button>
+
+        <button type="button" class="btn btn-primary" @onclick="Checkout"> To checkout </button>
+
+    </div>
+
+}
+else
+            {
+                <div>Loading data ...</div>
+            }
+
+
+
+@code {
+
+    [Parameter]
+    public int mealId { get; set; }
+
+
+    private Meal meal;
+    private string rating = "";
+    private string[] ingridients;
+    private int portions = 1;
+
+
+    private string mealPicSrc;
+    private string sellerPicSrc;
+
+
+    private void Checkout()
+    {
+        Console.WriteLine("checkout mealId=" + meal.MealId + ", " + portions);
+        NavigationManager.NavigateTo("/orderconfirm/" + meal.MealId.ToString() + "/" + portions.ToString());
+    }
+
+    private void DecreasePortions()
+    {
+        if (portions > 1)
+        {
+            portions = portions - 1;
+        }
+    }
+
+    private void IncreasePortions()
+    {
+        if (portions < meal.Portions - meal.Reserved)
+        {
+            portions = portions + 1;
+        }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        meal = createTestMeal(mealId);
+        await loadTestImages();
+
+        // meal = HentFraServer(mealId);
+
+
+        var base64 = Convert.ToBase64String(meal.MealPicture);
+        mealPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
+
+        base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
+        sellerPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
+
+
+        if (meal.Seller.Rating == -1)
+        {
+            rating = "No ratings";
+        }
+        else
+        {
+            rating = meal.Seller.Rating.ToString("#.#");
+        }
+    }
+
+    private async Task loadTestImages()
+    {
+        meal.MealPicture = await Http.GetByteArrayAsync("/assets/Spaghettichicken.png");
+        meal.Seller.SellerNavigation.ProfilePicture = await Http.GetByteArrayAsync("/assets/Hanne.png");
+    }
+
+    //
+    // For local test
+    //
+    private Meal createTestMeal(int id)
+    {
+        var meal = new Meal();
+        meal.MealId = id;
+        meal.PortionPrice = 20;
+        meal.Portions = 5;
+        meal.Titel = "Spagetti w/chicken";
+        meal.PickupFrom = new DateTime(2021, 1, 20, 19, 0, 0);
+        meal.PickupTo = new DateTime(2021, 1, 20, 19, 20, 0);
+        meal.MealDescription = "I’ll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.";
+
+
+        meal.Ingridients = "Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto";
+        ingridients = meal.Ingridients.Split(',');
+
+        var buyer = new Buyer();
+        buyer.FirstName = "Hanne";
+
+        Address address = new Address();
+        address.Line1 = "Boulevarden 14";
+        address.City = "Aalborg";
+
+        Seller seller = new Seller();
+        seller.SellerNavigation = buyer;
+        seller.Address = address;
+
+        seller.Meal = new List<Meal>();
+        seller.Meal.Add(meal);
+
+        meal.Seller = seller;
+
+        meal.Review = new List<Review>();
+        Review review1 = new Review();
+        review1.Rating = 3;
+        review1.Meal = meal;
+
+        Review review2 = new Review();
+        review2.Rating = 4;
+        review2.Meal = meal;
+
+        meal.Review.Add(review1);
+        meal.Review.Add(review2);
+
+        meal.Mealorder = new List<Mealorder>();
+
+        Mealorder order1 = new Mealorder();
+        order1.Quantity = 1;
+
+        Mealorder order2 = new Mealorder();
+        order2.Quantity = 1;
+
+        meal.Mealorder.Add(order1);
+        meal.Mealorder.Add(order2);
+
+        return meal;
+    }
+
+}

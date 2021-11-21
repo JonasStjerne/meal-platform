@@ -1,0 +1,21 @@
+﻿@page "/orderconfirmation/{orderId:int}"
+@inject NavigationManager NavigationManager
+@using Food_Like.Shared;
+
+
+<p>Thank you for your order</p>
+<p>Order id: @orderId</p>
+
+
+@code {
+
+    [Parameter]
+    public int orderId { get; set; }
+
+    private Mealorder order;
+
+    protected override void OnInitialized()
+    {
+        // order = hent order i database med orderId
+    }
+}

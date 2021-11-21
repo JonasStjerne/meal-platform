@@ -12,7 +12,6 @@ namespace Food_Like.Shared
         public int OrderId { get; set; }
         public int BuyerId { get; set; }
         public int MealId { get; set; }
-        public DateTime PickUpTime { get; set; }
         public sbyte Quantity { get; set; }
 
         public virtual Buyer Buyer { get; set; }

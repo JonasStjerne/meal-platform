@@ -1,0 +1,29 @@
+﻿@page "/orderconfirm/{mealId:int}/{portions:int}"
+@inject NavigationManager NavigationManager
+
+
+<p>Current meal: @mealId</p>
+
+<p>Selected portions: @portions</p>
+
+<button type="button" class="btn btn-primary" @onclick="Confirm">Confirm </button>
+
+@code {
+
+    [Parameter]
+    public int mealId { get; set; }
+
+    [Parameter]
+    public int portions { get; set; }
+
+    private void Confirm()
+    {
+        Console.WriteLine("confirm mealId=" + mealId + ", " + portions);
+
+        // Create order from mealid and portions
+        int orderId = 99;
+
+        NavigationManager.NavigateTo("/orderconfirmation/" + orderId.ToString());
+    }
+
+}

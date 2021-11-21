@@ -119,7 +119,9 @@ namespace Food_Like.Server.Models
                 entity.HasIndex(e => e.SellerId)
                     .HasName("SellerId");
 
-                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+                entity.Property(e => e.PickupFrom).HasColumnType("datetime");
+
+                entity.Property(e => e.PickupTo).HasColumnType("datetime");
 
                 entity.Property(e => e.Ingridients)
                     .IsRequired()
@@ -187,8 +189,6 @@ namespace Food_Like.Server.Models
 
                 entity.HasIndex(e => e.MealId)
                     .HasName("MealId");
-
-                entity.Property(e => e.PickUpTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Buyer)
                     .WithMany(p => p.Mealorder)

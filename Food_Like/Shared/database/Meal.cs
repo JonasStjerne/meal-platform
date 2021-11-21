@@ -23,12 +23,45 @@ namespace Food_Like.Shared
         public decimal PortionPrice { get; set; }
         public string MealDescription { get; set; }
         public string Ingridients { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime PickupFrom { get; set; }
+        public DateTime PickupTo { get; set; }
         public byte[] MealPicture { get; set; }
 
         public virtual Seller Seller { get; set; }
         public virtual ICollection<Mealcategory> Mealcategory { get; set; }
         public virtual ICollection<Mealorder> Mealorder { get; set; }
         public virtual ICollection<Review> Review { get; set; }
+
+        public decimal Rating
+        {
+            get
+            {
+                if (Review.Count == 0)
+                {
+                    return -1;
+                }
+                decimal sum = 0;
+                foreach(Review review in Review)
+                {
+                    sum += review.Rating;
+                }
+                return sum / Review.Count;
+            }
+        }
+
+
+        public decimal Reserved
+        {
+            get
+            {
+                int sum = 0;
+                foreach (Mealorder order in Mealorder)
+                {
+                    sum += order.Quantity;
+                }
+                return sum;
+            }
+        }
+
     }
 }
