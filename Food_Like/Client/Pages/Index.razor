@@ -258,7 +258,6 @@
     private const string PrimaryBtn = "btn-primary";
     private const string SecondaryBtn = "btn-secondary";
 
-    private bool buyerMode = true;
     private string buyerClass = PrimaryBtn;
     private string sellerClass = SecondaryBtn;
 
@@ -276,22 +275,20 @@
 
     private Concept[] concepts = buyerConcepts;
 
-    private void SelectBuyerMode()
+    private async void SelectBuyerMode()
     {
-        buyerMode = true;
         buyerClass = PrimaryBtn;
         sellerClass = SecondaryBtn;
         concepts = buyerConcepts;
-        resetCarousel("#carouselExampleCaptions");
+        await resetCarousel("#carouselExampleCaptions");
     }
 
-    private void SelectSellerMode()
+    private async void SelectSellerMode()
     {
-        buyerMode = false;
         buyerClass = SecondaryBtn;
         sellerClass = PrimaryBtn;
         concepts = sellerConcepts;
-        resetCarousel("#carouselExampleCaptions");
+        await resetCarousel("#carouselExampleCaptions");
     }
 
     protected async override void OnInitialized()
