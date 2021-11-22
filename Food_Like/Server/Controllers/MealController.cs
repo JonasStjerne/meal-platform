@@ -14,11 +14,11 @@ namespace Food_Like.Server.Controllers
     public class MealController : ControllerBase
     {
         [HttpGet]
-        public List<Meal> Get()
+        public IEnumerable<Meal> Get()
         {
             using (var context = new foodlikeContext())
             {
-                return context.Meal.ToList();
+                return context.Meal.ToList().OrderBy(e => e.Rating).Take(10);
             }
         }
     }
