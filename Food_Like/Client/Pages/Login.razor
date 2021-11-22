@@ -41,7 +41,7 @@
     <input type="email" id="inputEmail" class="form-control mb-2" placeholder="Email address" @bind="email" required autofocus>
     <label for="inputPassword" class="sr-only">Password</label>
     <input type="password" id="inputPassword" class="form-control" placeholder="Password" @bind="password" required>
-    <button class="mt-4 btn btn-lg btn-primary btn-block" @onclick="submitLogin">Login</button>
+    <button type="button" class="mt-4 btn btn-lg btn-primary btn-block" @onclick="submitLogin">Login</button>
     <p class="text-center"><NavLink href="#">Forgot</NavLink></p>
 </form>
 @if (errorMessage.Length > 0)
@@ -60,23 +60,22 @@
 
     private async void submitLogin()
     {
-        errorMessage = "Test " + email + " " + password;
+        errorMessage = "";
         var req = new LoginRequest
         {
             Email = email,
             EncryptedPassword = password
         };
 
-        var response = await Http.PostAsJsonAsync("api/auth/login", req);
+        using var response = await Http.PostAsJsonAsync("api/auth/login", req);
         var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
         if (result.Sucess == true)
         {
-            errorMessage = "Sucess";
-            //NavManager.NavigateTo("/");
+            NavManager.NavigateTo("/homepage");
         }
         else
         {
-            errorMessage = "Nope";
+            errorMessage = "Wrong password or email";
         }
 
     }
