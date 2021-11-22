@@ -11,15 +11,14 @@ namespace Food_Like.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class MealController : ControllerBase
     {
-
         [HttpGet]
-        public IEnumerable<Buyer> Get()
+        public List<Meal> Get()
         {
             using (var context = new foodlikeContext())
             {
-                return context.Buyer.ToList();
+                return context.Meal.ToList();
             }
         }
     }
