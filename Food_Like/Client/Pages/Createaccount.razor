@@ -86,7 +86,7 @@
         var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
         if (result.Sucess == true)
         {
-            NavManager.NavigateTo("/homepage");
+            NavManager.NavigateTo("/home");
         }
         else
         {
