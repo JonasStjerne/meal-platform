@@ -46,7 +46,7 @@
 </form>
 @if (errorMessage.Length > 0)
 {
-    <div class="alert alert-danger" role="alert"> 
+    <div class="alert alert-danger d-flex justify-content-center" role="alert"> 
         <p>@errorMessage</p>
     </div>
 }
@@ -60,7 +60,7 @@
 
     private async void submitLogin()
     {
-        errorMessage = "Test";
+        errorMessage = "";
         var req = new LoginRequest
         {
             Email = email,
@@ -76,6 +76,7 @@
         else
         {
             errorMessage = "Wrong password or email";
+            StateHasChanged();
         }
 
     }
