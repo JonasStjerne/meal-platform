@@ -22,5 +22,6 @@ namespace Food_Like.Server.Controllers
                 return context.Buyer.ToList();
             }
         }
+
     }
 }
