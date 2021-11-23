@@ -1,5 +1,7 @@
 ﻿@page "/createaccount"
 @using Food_Like.Shared
+@inject HttpClient Http
+@inject NavigationManager NavManager
 
 <style>
 
@@ -15,16 +17,16 @@
         margin: 5px;
     }
 
-    .createpicture{
-        height:118px;
-        width:118px;
+    .createpicture {
+        height: 118px;
+        width: 118px;
         margin-left: auto;
         margin-right: auto;
     }
 </style>
 
 <div class="createpicture">
-    <a href="createaccount"><img src="/assets/createpicture.png" alt="" ></a>
+    <a href="createaccount"><img src="/assets/createpicture.png" alt=""></a>
 </div>
 
 
@@ -36,7 +38,7 @@
         <label for="inputPassword" class="">Password</label>
         <input type="password" id="inputPassword" class="form-control mb-2 shadow-sm" placeholder="Password" required>
 
-        
+
         <label for="inputFirstname" class="">Firstname</label>
         <input type="text" id="inputFirstname" class="form-control mb-2 shadow-sm" placeholder="Firstname" required autofocus>
 
@@ -46,10 +48,55 @@
         <label for="inputNumber" class="">Mobile</label>
         <input type="number" id="inputNumber" class="form-control mb-2 shadow-sm" placeholder="Mobile" required autofocus>
 
-        <button class="mt-4 btn btn-lg btn-primary btn-block createbtn" type="submit">Create</button>
+        <button class="mt-4 btn btn-lg btn-primary btn-block createbtn" type="button">Create</button>
 
     </form>
+    @if (errorMessage.Length > 0)
+    {
+        <div class="alert alert-danger" role="alert">
+            <p>@errorMessage</p>
+        </div>
+    }
 </div>
+
+@code {
+    private string errorMessage = "";
+
+    private string email { get; set; }
+    private string password { get; set; }
+    private string firstname { get; set; }
+    private string surname { get; set; }
+    private string mobile { get; set; }
+    private Byte[] profilePicture;
+
+    private async void submitCreate()
+    {
+        errorMessage = "";
+        var req = new Buyer
+        {
+            Email = email,
+            EncryptedPassword = password,
+            FirstName = firstname,
+            LastName = surname,
+            PhoneNumber = mobile,
+            ProfilePicture = profilePicture
+        };
+
+        using var response = await Http.PostAsJsonAsync("api/auth/create", req);
+        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+        if (result.Sucess == true)
+        {
+            NavManager.NavigateTo("/homepage");
+        }
+        else
+        {
+            errorMessage = "Wrong password or email";
+        }
+
+    }
+}
+
+
 
 
 @* Bootstrap 12/11 21 https://getbootstrap.com/docs/4.5/examples/ *@
