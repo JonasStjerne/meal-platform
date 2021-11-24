@@ -7,7 +7,7 @@ namespace Food_Like.Shared
     public class AuthState
     {
         public bool FoundUser;
-        public Buyer? User;
+        public Buyer User;
 
         public AuthState(bool foundUser, Buyer user = null)
         {

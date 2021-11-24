@@ -25,26 +25,37 @@ namespace Food_Like.Server.Controllers
         }
 
         [HttpPost("setupseller")]
-        public dynamic SetupSeller(Auth auth)
+        public dynamic SetupSeller(Auth request)
         {
             using (var context = new foodlikeContext())
             {
+                //Makes an new userService instance to access methods
                 var userService = new UserService(context);
-                AuthState authState = userService.GetUser(auth);
-                if (authState.FoundUser == true && !userService.UserIsSeller(auth))
+
+                //Gets the auth state for the user, still also containing the request
+                AuthState authState = userService.GetUser(request);
+
+                //If the user exist and is not a seller, then create seller
+                if (authState.FoundUser == true && !userService.UserIsSeller(request))
                 {
+                    //Declare the user from the auth
                     Buyer user = authState.User;
-                    var address = new Address()
-                    {
-                        City = auth.Request.Address.City,
-                        Line1 = auth.Request.Address.Line1,
-                        Line2 = auth.Request.Address.Line2,
-                    };
 
-                    auth.Request.Address = address;
-                    context.Seller.Add(auth.Request);
+
+                    //var address = new Address()
+                    //{
+                    //    City = auth.Request.Address.City,
+                    //    Line1 = auth.Request.Address.Line1,
+                    //    Line2 = auth.Request.Address.Line2,
+                    //};
+
+                    //Set the address 
+                    //request.Data.SellerId = user.BuyerId;
+                    context.Address.Add(request.Data.Address);
                     context.SaveChanges();
-
+                    request.Data.AddressId = request.Data.Address.AddressId;
+                    request.Data.SellerId = user.BuyerId;
+                    context.SaveChanges();
                     return context.Buyer.Where(e => e.BuyerId == user.BuyerId);
                 }
                 else

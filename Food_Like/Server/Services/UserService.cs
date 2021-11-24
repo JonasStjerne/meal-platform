@@ -41,12 +41,19 @@ namespace Food_Like.Server.Services
         public AuthState GetUser(Auth auth)
         {
             var user = _dbContext.Buyer.ToList().Find(user => user.Email == auth.Email && user.EncryptedPassword == auth.EncryptedPassword);
-            return new AuthState(true, user);
+            if (user != null)
+            {
+                return new AuthState(true, user);
+            } else
+            {
+                return new AuthState(false);
+            }
+            
         }
 
         public bool UserIsSeller(Auth auth)
         {
-            return _dbContext.Seller.ToList().Any(user => user.SellerId == auth.Request.SellerId);
+            return _dbContext.Seller.ToList().Any(user => user.SellerId == auth.Data.SellerId);
         }
 
         
