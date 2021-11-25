@@ -57,6 +57,14 @@
     private string password { get; set; }
     private string errorMessage = "";
 
+    protected async override void OnInitialized()
+    {
+        var token = await localStore.GetItemAsync<string>("credentials");
+        if (token != null)
+        {
+            NavManager.NavigateTo("/home");
+        }
+    }
 
     private async void submitLogin()
     {
