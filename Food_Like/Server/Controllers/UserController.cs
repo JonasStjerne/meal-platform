@@ -25,42 +25,45 @@ namespace Food_Like.Server.Controllers
         }
 
         [HttpPost("setupseller")]
-        public dynamic SetupSeller(Auth request)
+        public dynamic SetupSeller(Auth<Seller> request)
         {
             using (var context = new foodlikeContext())
             {
-                //Makes an new userService instance to access methods
-                var userService = new UserService(context);
-
-                //Gets the auth state for the user, still also containing the request
-                AuthState authState = userService.GetUser(request);
-
-                //If the user exist and is not a seller, then create seller
-                if (authState.FoundUser == true && !userService.UserIsSeller(request))
+                try
                 {
-                    //Declare the user from the auth
-                    Buyer user = authState.User;
 
+                    //Makes an new userService instance to access methods
+                    var userService = new UserService(context);
 
-                    //var address = new Address()
-                    //{
-                    //    City = auth.Request.Address.City,
-                    //    Line1 = auth.Request.Address.Line1,
-                    //    Line2 = auth.Request.Address.Line2,
-                    //};
+                    //Gets the auth state for the user, still also containing the request
+                    AuthState authState = userService.GetUser(request);
 
-                    //Set the address 
-                    //request.Data.SellerId = user.BuyerId;
-                    context.Address.Add(request.Data.Address);
-                    context.SaveChanges();
-                    request.Data.AddressId = request.Data.Address.AddressId;
-                    request.Data.SellerId = user.BuyerId;
-                    context.SaveChanges();
-                    return context.Buyer.Where(e => e.BuyerId == user.BuyerId);
-                }
-                else
+                    //If the user exist and is not a seller, then create seller
+                    if (authState.FoundUser == true && authState.User.Seller == null)
+                    {
+                        //Declare the user from the auth
+                        Buyer user = authState.User;
+
+                        //Declatre the seller object
+                        Seller sellerInformation = new Seller()
+                        {
+                            SellerId = user.BuyerId,
+                            KitchenPicture = request.Request.KitchenPicture,
+                            Address = request.Request.Address
+                        };
+
+                        context.Seller.Add(sellerInformation);
+                        context.SaveChanges();
+
+                        return "Succes";
+                    }
+                    else
+                    {
+                        return "Wrong User Credientials or Already a seller";
+                    }
+                } catch (Exception execption)
                 {
-                    return "naah";
+                    return "Error, somethin went wrong" + execption.Message;
                 }
                
             }

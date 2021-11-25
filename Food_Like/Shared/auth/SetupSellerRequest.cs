@@ -8,7 +8,5 @@ namespace Food_Like.Shared
     {
         public byte[] KitchenPicture;
         public Address Address;
-        public int SellerId;
-
     }
 }

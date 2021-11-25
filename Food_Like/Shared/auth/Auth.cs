@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Food_Like.Shared
 {
-    public class Auth
+    public class Auth<T>
     {
         public string EncryptedPassword { get; set; }
         public string Email { get; set; }
-        public Seller Data { get; set; }
+        public T Request { get; set; }
 
 
         //public Auth(string token, SetupSellerRequest data)

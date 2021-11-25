@@ -74,16 +74,23 @@
             Address = address
         };
 
-        Auth req = new Auth()
+        //SetupSellerRequest request = new SetupSellerRequest()
+        //{
+        //    Address = address,
+        //    KitchenPicture = new byte[0]
+        //};
+
+        Auth<Seller> authRequest = new Auth<Seller>()
         {
             EncryptedPassword = "pass",
             Email = "mail@mail.dk",
-            Data = data
+            Request = data
         };
 
-        using var response = await Http.PostAsJsonAsync("api/user/setupseller", req);
+        using var response = await Http.PostAsJsonAsync("api/user/setupseller", authRequest);
         var result = await response.Content.ReadFromJsonAsync<JsonContent>();
         errorMessage = result.ToString();
+        StateHasChanged();
     }
 
 }

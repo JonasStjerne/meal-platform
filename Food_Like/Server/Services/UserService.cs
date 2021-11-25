@@ -25,7 +25,7 @@ namespace Food_Like.Server.Services
         {
             return _dbContext.Buyer.ToList().Any(user => user.Email == buyer.Email);
         }
-        public bool UserExists(Auth auth)
+        public bool UserExists(dynamic auth)
         {
             return _dbContext.Buyer.ToList().Any(user => user.Email == auth.Email);
         }
@@ -38,7 +38,7 @@ namespace Food_Like.Server.Services
         {
             return _dbContext.Buyer.ToList().Find(user => user.Email == buyer.Email && user.EncryptedPassword == buyer.EncryptedPassword);
         }
-        public AuthState GetUser(Auth auth)
+        public AuthState GetUser(dynamic auth)
         {
             var user = _dbContext.Buyer.ToList().Find(user => user.Email == auth.Email && user.EncryptedPassword == auth.EncryptedPassword);
             if (user != null)
@@ -51,9 +51,9 @@ namespace Food_Like.Server.Services
             
         }
 
-        public bool UserIsSeller(Auth auth)
+        public bool UserIsSeller(Auth<Seller> auth)
         {
-            return _dbContext.Seller.ToList().Any(user => user.SellerId == auth.Data.SellerId);
+            return _dbContext.Seller.Any(seller => seller.SellerId == GetUser(auth).User.BuyerId);
         }
 
         
