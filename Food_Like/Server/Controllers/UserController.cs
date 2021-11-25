@@ -55,15 +55,24 @@ namespace Food_Like.Server.Controllers
                         context.Seller.Add(sellerInformation);
                         context.SaveChanges();
 
-                        return "Succes";
+                        return new SetupSellerResponse()
+                        {
+                            Success = true
+                        };
                     }
                     else
                     {
-                        return "Wrong User Credientials or Already a seller";
+                        return new SetupSellerResponse()
+                        {
+                            Success = false
+                        };
                     }
-                } catch (Exception execption)
+                } catch (Exception)
                 {
-                    return "Error, somethin went wrong" + execption.Message;
+                    return new SetupSellerResponse()
+                    {
+                        Success = false
+                    };
                 }
                
             }

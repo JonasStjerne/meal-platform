@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,14 +11,15 @@ namespace Food_Like.Shared
         public string Email { get; set; }
         public T Request { get; set; }
 
+        public Auth(string token)
+        {
+            string[] credentials = token.Split("-.-");
+            Email = credentials[0];
+            EncryptedPassword = credentials[1];
+        }
 
-        //public Auth(string token, SetupSellerRequest data)
-        //{
-        //    string[] credentials = token.Split("-.-");
-        //    Email = credentials[0];
-        //    EncryptedPassword = credentials[1];
-        //    Data = data;
-        //}
+        [JsonConstructor]
+        public Auth(){}
     }
 
 }

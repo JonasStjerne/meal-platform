@@ -56,6 +56,7 @@
     private string city { get; set; }
     private byte[] kitchenPicture { get; set; }
     private string errorMessage = "";
+    private string token = "ma323il@mail.dk-.-MichaelsPass";
 
 
     private async void submitSetupSeller()
@@ -80,17 +81,21 @@
         //    KitchenPicture = new byte[0]
         //};
 
-        Auth<Seller> authRequest = new Auth<Seller>()
+        Auth<Seller> authRequest = new Auth<Seller>(token)
         {
-            EncryptedPassword = "pass",
-            Email = "mail@mail.dk",
             Request = data
         };
 
         using var response = await Http.PostAsJsonAsync("api/user/setupseller", authRequest);
-        var result = await response.Content.ReadFromJsonAsync<JsonContent>();
-        errorMessage = result.ToString();
-        StateHasChanged();
+        var result = await response.Content.ReadFromJsonAsync<SetupSellerResponse>();
+        if (result.Success == true)
+        {
+            NavManager.NavigateTo("/createmeal");
+        } else
+        {
+            errorMessage = "Somethin went wrong";
+            StateHasChanged();
+        }
     }
 
 }
