@@ -2,6 +2,9 @@
 @using Food_Like.Shared
 @inject NavigationManager NavManager
 @inject HttpClient Http
+@using Blazored.LocalStorage
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+
 
 <style>
 
@@ -25,7 +28,7 @@
             }
 
         .form-signin input[type="email"] {
-            margin-bottom: -1px; 
+            margin-bottom: -1px;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
         }
@@ -52,20 +55,25 @@
 
 
 @code {
+    const string credentials = "credentials";
     private string line1 { get; set; }
     private string city { get; set; }
     private byte[] kitchenPicture { get; set; }
     private string errorMessage = "";
-    private string token = "ma323il@mail.dk-.-MichaelsPass";
+    private string token { get; set; }
 
+    protected async override void OnInitialized()
+    {
+        token = await localStore.GetItemAsync<string>(credentials);
+    }
 
     private async void submitSetupSeller()
     {
         errorMessage = "";
         Address address = new Address
         {
-            Line1 = "Stjernepladsen 19",
-            City = "Aalborg"
+            Line1 = line1,
+            City = city
         };
 
 
@@ -91,7 +99,8 @@
         if (result.Success == true)
         {
             NavManager.NavigateTo("/createmeal");
-        } else
+        }
+        else
         {
             errorMessage = "Somethin went wrong";
             StateHasChanged();
