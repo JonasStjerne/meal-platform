@@ -36,12 +36,12 @@ namespace Food_Like.Server.Controllers
             }
         }
 
-        [HttpGet("topMeals")]
+        [HttpGet("topmeals")]
         public IEnumerable<Meal> GetTopMeals()
         {
             using (var context = new foodlikeContext())
             {
-                return context.Meal.ToList().OrderBy(e => e.Rating).Take(10);
+                return context.Meal.ToList().OrderBy(e => e.Rating).Take(12);
             }
         }
 

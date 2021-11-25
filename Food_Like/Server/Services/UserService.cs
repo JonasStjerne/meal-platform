@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Food_Like.Server.Services
 {
@@ -24,6 +25,10 @@ namespace Food_Like.Server.Services
         {
             return _dbContext.Buyer.ToList().Any(user => user.Email == buyer.Email);
         }
+        public bool UserExists(dynamic auth)
+        {
+            return _dbContext.Buyer.ToList().Any(user => user.Email == auth.Email);
+        }
 
         public dynamic GetUser(Buyer buyer)
         {
@@ -33,5 +38,24 @@ namespace Food_Like.Server.Services
         {
             return _dbContext.Buyer.ToList().Find(user => user.Email == buyer.Email && user.EncryptedPassword == buyer.EncryptedPassword);
         }
+        public AuthState GetUser(dynamic auth)
+        {
+            var user = _dbContext.Buyer.Include(e => e.Seller).ToList().Find(user => user.Email == auth.Email && user.EncryptedPassword == auth.EncryptedPassword);
+            if (user != null)
+            {
+                return new AuthState(true, user);
+            } else
+            {
+                return new AuthState(false);
+            }
+            
+        }
+
+        public bool UserIsSeller(Auth<Seller> auth)
+        {
+            return _dbContext.Seller.Any(seller => seller.SellerId == GetUser(auth).User.BuyerId);
+        }
+
+        
     }
 }
