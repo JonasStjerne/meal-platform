@@ -2,6 +2,7 @@
 @using Food_Like.Shared
 @inject NavigationManager NavManager
 @inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService localStore
 
 <style>
 
@@ -12,29 +13,29 @@
         margin: auto;
     }
 
-    .form-signin .form-control {
-        position: relative;
-        box-sizing: border-box;
-        height: auto;
-        padding: 10px;
-        font-size: 16px;
-    }
+        .form-signin .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
 
-    .form-signin .form-control:focus {
-        z-index: 2;
-    }
+            .form-signin .form-control:focus {
+                z-index: 2;
+            }
 
-    .form-signin input[type="email"] {
-        margin-bottom: -1px;
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-    }
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
 
-    .form-signin input[type="password"] {
-        margin-bottom: 10px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
 </style>
 <form class="form-signin">
     <label for="inputEmail" class="sr-only">Email address</label>
@@ -46,7 +47,7 @@
 </form>
 @if (errorMessage.Length > 0)
 {
-    <div class="alert alert-danger d-flex justify-content-center" role="alert"> 
+    <div class="alert alert-danger d-flex justify-content-center" role="alert">
         <p>@errorMessage</p>
     </div>
 }
@@ -79,6 +80,7 @@
         var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
         if (result.Sucess == true)
         {
+            await localStore.SetItemAsync("credentials", result.Token);
             NavManager.NavigateTo("/home");
         }
         else

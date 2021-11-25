@@ -2,6 +2,8 @@
 @using Food_Like.Shared
 @inject NavigationManager NavManager
 @inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+
 
 <style>
 
@@ -25,7 +27,7 @@
             }
 
         .form-signin input[type="email"] {
-            margin-bottom: -1px; 
+            margin-bottom: -1px;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
         }
@@ -38,7 +40,7 @@
 </style>
 <form class="form-signin">
     <label for="inputEmail" class="sr-only">Address</label>
-    <input type="text" id="inputEmail" class="form-control mb-2" placeholder="Address" @bind="address" required autofocus>
+    <input type="text" id="inputEmail" class="form-control mb-2" placeholder="Address" @bind="line1" required autofocus>
     <label for="inputPassword" class="sr-only">City</label>
     <input type="text" id="inputPassword" class="form-control" placeholder="City" @bind="city" required>
     <button type="button" class="mt-4 btn btn-lg btn-primary btn-block" @onclick="submitSetupSeller">Login</button>
@@ -52,38 +54,56 @@
 
 
 @code {
-    private string address { get; set; }
+    const string credentials = "credentials";
+    private string line1 { get; set; }
     private string city { get; set; }
-    private string kitchenPicture { get; set; }
+    private byte[] kitchenPicture { get; set; }
     private string errorMessage = "";
+    private string token { get; set; }
 
+    protected async override void OnInitialized()
+    {
+        token = await localStore.GetItemAsync<string>(credentials);
+    }
 
     private async void submitSetupSeller()
     {
         errorMessage = "";
-        Address addressReq = new Address
+        Address address = new Address
         {
-            Line1 = address,
+            Line1 = line1,
             City = city
         };
 
-        var req = new Seller
+
+        Seller data = new Seller()
         {
-            Address = addressReq,
-            KitchenPicture = new byte[0]
+            KitchenPicture = new byte[0],
+            Address = address
         };
 
-        using var response = await Http.PostAsJsonAsync("api/user/setupseller", req);
-        var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-        if (result.Sucess == true)
+        //SetupSellerRequest request = new SetupSellerRequest()
+        //{
+        //    Address = address,
+        //    KitchenPicture = new byte[0]
+        //};
+
+        Auth<Seller> authRequest = new Auth<Seller>(token)
+        {
+            Request = data
+        };
+
+        using var response = await Http.PostAsJsonAsync("api/user/setupseller", authRequest);
+        var result = await response.Content.ReadFromJsonAsync<SetupSellerResponse>();
+        if (result.Success == true)
         {
             NavManager.NavigateTo("/createmeal");
         }
         else
         {
-            errorMessage = "Something went wrong";
+            errorMessage = "Somethin went wrong";
+            StateHasChanged();
         }
-
     }
 
 }

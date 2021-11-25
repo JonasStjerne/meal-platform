@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Food_Like.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace Food_Like.Server.Controllers
 {
@@ -28,7 +29,8 @@ namespace Food_Like.Server.Controllers
                         Token = String.Format("{0}-.-{1}", user.Email, user.EncryptedPassword),
                         User = user
                     };
-                } else
+                } 
+                else
                 {
                     return new LoginResponse
                     {
