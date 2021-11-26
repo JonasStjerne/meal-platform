@@ -35,7 +35,7 @@ namespace Food_Like.Server.Controllers
             }
         }
 
-        [HttpPost("meal/{id}")]
+        [HttpPost("{id}")]
         public IActionResult BuyMeal(int id, Auth<sbyte> auth)
         {
             using (var context = new foodlikeContext())
@@ -60,6 +60,7 @@ namespace Food_Like.Server.Controllers
                             MealId = meal.MealId,
                             Quantity = auth.Request
                         });
+                        context.SaveChanges();
                         return Ok();
                     }
                     return BadRequest();
