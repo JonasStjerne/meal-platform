@@ -17,25 +17,20 @@ namespace Food_Like.Server.Controllers
         private static readonly HttpClient client = new HttpClient();
 
         [HttpGet("{id}")]
-        public GenericResponse<dynamic> GetMeal(int id)
+        public IActionResult GetMeal(int id)
         {
             using (var context = new foodlikeContext())
             {
-                try
+                
+                var result = context.Meal.ToList().Find(meal => meal.MealId == id);
+                if (result != null)
                 {
-                    return new GenericResponse<dynamic>()
-                    {
-                        Data = context.Meal.ToList().Find(meal => meal.MealId == id),
-                        Sucess = context.Meal.ToList().Any(meal => meal.MealId == id)
-                    };
-                }
-                catch
+                    return Ok(result);
+                } else
                 {
-                    return new GenericResponse<dynamic>()
-                    {
-                        Sucess = false
-                    };
+                    return NotFound();
                 }
+                
             }
         }
 
