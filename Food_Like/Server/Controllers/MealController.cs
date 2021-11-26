@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Food_Like.Server.Controllers
 {
@@ -31,6 +32,43 @@ namespace Food_Like.Server.Controllers
                     return NotFound();
                 }
                 
+            }
+        }
+
+        [HttpPost("meal/{id}")]
+        public IActionResult BuyMeal(int id, Auth<sbyte> auth)
+        {
+            using (var context = new foodlikeContext())
+            {
+                var userService = new UserService(context);
+                var authState = userService.GetUser(auth);
+
+                if (authState.FoundUser == false)
+                {
+                    return Unauthorized();
+                }
+                    
+                var meal = context.Meal.Include(e => e.Mealorder).ToList().Find(meal => meal.MealId == id);
+                if (meal != null)
+                {
+                    if (meal.Portions - meal.Mealorder.Count(e => e.MealId == id) >= auth.Request)
+                    {
+                        context.Mealorder.Add(
+                        new Mealorder
+                        {
+                            BuyerId = authState.User.BuyerId,
+                            MealId = meal.MealId,
+                            Quantity = auth.Request
+                        });
+                        return Ok();
+                    }
+                    return BadRequest();
+                }
+                else
+                {
+                    return NotFound();
+                }
+
             }
         }
 
