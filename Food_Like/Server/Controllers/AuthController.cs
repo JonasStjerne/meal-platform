@@ -79,16 +79,5 @@ namespace Food_Like.Server.Controllers
             }
 
         }
-
-        //Only needed if we hash information to localstorage and need to verify that
-
-        //[HttpPost("authorize")]
-        //public AuthorizeResponse Authorize(AuthorizeRequest request)
-        //{
-        //    using (var context = new FoodLikeContext()) 
-        //    {
-
-        //    }
-        //}
     }
 }
