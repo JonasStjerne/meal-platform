@@ -35,6 +35,34 @@ namespace Food_Like.Server.Controllers
             }
         }
 
+        [HttpPost("create")]
+        public IActionResult createMeal(Auth<Meal> request)
+        {
+            using (var context = new foodlikeContext())
+            {
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(request);
+
+                if (authState.FoundUser == false || !userService.UserIsSeller(authState))
+                {
+                    return Unauthorized();
+                }
+                try
+                {
+                    request.Request.SellerId = authState.User.BuyerId;
+                    context.Meal.Add(request.Request);
+                    context.SaveChanges();
+                    return Ok();
+                }
+                catch (Exception)
+                {
+                    return BadRequest();
+                }
+
+            }
+        }
+
         [HttpPost("{id}")]
         public IActionResult BuyMeal(int id, Auth<sbyte> auth)
         {
@@ -73,6 +101,7 @@ namespace Food_Like.Server.Controllers
             }
         }
 
+        //Not ready
         [HttpGet("search{location}")]
         public dynamic Search(string location)
         {

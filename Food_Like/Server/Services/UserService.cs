@@ -56,6 +56,9 @@ namespace Food_Like.Server.Services
             return _dbContext.Seller.Any(seller => seller.SellerId == GetUser(auth).User.BuyerId);
         }
 
-        
+        public bool UserIsSeller(AuthState authState)
+        {
+            return _dbContext.Seller.Any(seller => seller.SellerId == authState.User.BuyerId);
+        }
     }
 }
