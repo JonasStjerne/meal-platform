@@ -50,6 +50,10 @@ namespace Food_Like.Server.Controllers
                 }
                 try
                 {
+                    if (! (request.Request.PickupFrom > DateTime.Now) && request.Request.PickupFrom.AddMinutes(30) > request.Request.PickupTo)
+                    {
+                        throw new Exception();
+                    }
                     request.Request.SellerId = authState.User.BuyerId;
                     context.Meal.Add(request.Request);
                     context.SaveChanges();
