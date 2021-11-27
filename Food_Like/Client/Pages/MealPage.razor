@@ -1,5 +1,5 @@
 ﻿@page "/meal/{mealId:int}"
-@layout OuterLayout
+@layout MealLayout
 @inject NavigationManager NavigationManager
 @using System.IO;
 @using Food_Like.Shared;
@@ -20,80 +20,162 @@
             width: 100%;
             position: absolute;
         }
+
+        .item{
+        margin: 0px;
+        padding: 0px;
+        position: relative;
+        width: 100%;
+        height: 234px;
+        overflow: hidden;
+    }
+
+    .item .img-wrap:before {
+        content: '';
+        background-image: linear-gradient(to top, rgba(239,239,239,255), rgba(239,239,239,0));
+        position: absolute;
+        height: 100px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .item .img-wrap:after {
+        content: '';
+        display: block;
+        height: 9999px;
+    }
+
+    .img-wrap img {
+        width: 100%;
+        height: 234px;
+        vertical-align: top;
+        border: 0;
+        box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.2);
+        -ms-interpolation-mode: bicubic;
+    }
+
+    .price {
+        height: 28px;
+        width: 59px;
+        background-color: #fff;
+        border-radius: 2px;
+        text-align: center;
+        position: absolute;
+        right: 20px;
+        top: 19px;
+    }
+
+    .content {
+        position: absolute;
+        padding-top: unset;
+        top: 200px;
+    }
+
+
+
+    .ingridients {
+        background-color: #EAEAEA;
+        text-align: center;
+    }
 </style>
 
 @if (meal != null)
 {
+    <div class="item">
+        <div class="img-wrap">
+            <img src="@mealPicSrc" alt="..." />
+        </div>
+    </div>
 
-    <div>
+    <div class="price cardshadow">
         <p> @meal.PortionPrice kr</p>
     </div>
 
 
 
-    <img src="@mealPicSrc" alt="..." />
 
-    <div>
-        <p> @meal.Reserved / @meal.Portions reserved</p>
-        <h1> @meal.Titel </h1>
-        <p> Pickup at @meal.PickupFrom.ToString("HH:mm") - @meal.PickupTo.ToString("HH:mm , dd/MM")</p>
-        <p> @meal.MealDescription</p>
+    <div class="content ">
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div>
+                        <p style="margin: unset;"> @meal.Reserved / @meal.Portions reserved</p>
+                        <h2 style="margin: unset;"> @meal.Titel </h2>
+                        <p> Pickup at @meal.PickupFrom.ToString("HH:mm") - @meal.PickupTo.ToString("HH:mm , dd/MM")</p>
+                        <p> @meal.MealDescription</p>
+                    </div>
+                    <div>
+                        <p> Pickup around this location </p>
+
+                        <!--Google map-->
+                        <div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 120px; width:176px; border-radius: 2px;">
+                            <iframe src="https://maps.google.com/maps?q=@(meal.Seller.Address.Line1),@(meal.Seller.Address.City)&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
+                                    style="border:0" allowfullscreen></iframe>
+                        </div>
+
+                        <!--Google Maps-->
+                    </div>
+
+                </div>
+                <div class="col">
+                    <div class="pb" align="center">
+                        <img src="@sellerPicSrc" alt="@meal.Seller.SellerNavigation.FirstName" style="border-radius:100px;">
+                    </div>
+                    <div style="margin-bottom: 1rem;" align="center">
+                        <p style="color: #FFC700;"><img src="/assets/Star.png" style="height:24px; width:24px;">@rating / 5 </p>
+                    </div>
+
+
+                    <div class="ingridients cardshadow">
+                        <h3> Ingridients</h3>
+                        <ul style="list-style-type: none; margin: 0; padding: 0; ">
+                            @foreach (string item in ingridients)
+                            {
+                                <li>@item</li>
+                            }
+
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="fixed-bottom px-4" style="padding-bottom:1.5rem;">
+        <div class="row">
+            <div class="col">
+
+
+                <h1>
+                    <img src="/assets/minusbutton.png" @onclick="DecreasePortions" />
+
+                    @portions
+
+
+                    <img src="/assets/plusbutton.png" @onclick="IncreasePortions" />
+                </h1>
+
+            </div>
+            <div class="col" align="center">
+                <button style="height:56px; width:190px;" type="button" class="btn btn-primary" @onclick="Checkout"> To checkout </button>
+            </div>
+        </div>
 
     </div>
 
 
-    <div>
-        <p> @meal.Seller.Address.Line1</p>
-        <img>
-    </div>
-
-    <!--Google map-->
-    <div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 500px">
-        <iframe src="https://maps.google.com/maps?q=@(meal.Seller.Address.Line1),@(meal.Seller.Address.City)&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
-                style="border:0" allowfullscreen></iframe>
-    </div>
-
-    <!--Google Maps-->
-
-    <div>
-        <img src="@sellerPicSrc" alt="@meal.Seller.SellerNavigation.FirstName" class="d-block">
-        <p>@meal.Seller.SellerNavigation.FirstName</p>
-        <p>@rating</p>
-    </div>
-
-    <div>
-        <h3> Ingridients</h3>
-        <ul>
-            @foreach (string item in ingridients)
-            {
-                <li>@item</li>
-            }
-
-        </ul>
-    </div>
-
-
-
-
-
-
-    <div>
-
-        <button type="button" class="btn btn-secondary" @onclick="DecreasePortions"> - </button>
-
-        <span> @portions </span>
-
-        <button type="button" class="btn btn-primary" @onclick="IncreasePortions"> + </button>
-
-        <button type="button" class="btn btn-primary" @onclick="Checkout"> To checkout </button>
-
-    </div>
 
 }
 else
-            {
-                <div>Loading data ...</div>
-            }
+{
+    <div>Loading data ...</div>
+}
 
 
 

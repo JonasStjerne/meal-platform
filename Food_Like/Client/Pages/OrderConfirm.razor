@@ -1,12 +1,70 @@
 ﻿@page "/orderconfirm/{mealId:int}/{portions:int}"
 @inject NavigationManager NavigationManager
+@layout MealLayout
 
 
-<p>Current meal: @mealId</p>
 
-<p>Selected portions: @portions</p>
+<div class="px-4" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+    <img src="/assets/back.png" />
+</div>
 
-<button type="button" class="btn btn-primary" @onclick="Confirm">Confirm </button>
+
+
+
+<div class="container px-4">
+
+    <div class="row">
+        <div class="col">
+            <img src="/assets/Spaghettichicken.png" />
+        </div>
+        <div class="col">
+            <p>Current meal: @mealId</p>
+
+            <p>Selected portions: @portions</p>
+        </div>
+    </div>
+</div>
+
+<div class="container px-4" style="margin-top:80px;">
+    <div class="row" style="margin-top:50px;">
+        <div class="col">
+            <img src="/assets/house.png" style="height:77px; width:77px;">
+        </div>
+        <div class="col">
+            <p> You will recieve the pickup adress after confirming this order</p>
+        </div>
+    </div>
+    <div class="row" style="margin-top:50px;">
+        <div class="col">
+            <img src="/assets/pickup.png" style="height:77px; width:77px;">
+        </div>
+        <div class="col">
+            <p>Bring your food container and pickup the meal at 19:00-19:20 on 20/1</p>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:50px;">
+        <div class="col">
+            <img src="/assets/createmeal.png" style="height:77px; width:77px;">
+        </div>
+        <div class="col">
+            <p>Pay with mobilepay through the “Pay” button on the meal reservation. Your reservations can be found on the front page</p>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+<div class="fixed-bottom px-4" style="padding-bottom:1.5rem;" align="center">
+    <button style="height:56px; width:190px;" type="button" class="btn btn-primary" @onclick="Confirm">Confirm </button>
+</div>
+
+
+
+
 
 @code {
 
@@ -27,3 +85,4 @@
     }
 
 }
+

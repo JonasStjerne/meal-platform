@@ -1,10 +1,47 @@
 ﻿@page "/orderconfirmation/{orderId:int}"
 @inject NavigationManager NavigationManager
 @using Food_Like.Shared;
+@layout MealLayout
+
+<div class="px-4" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+    <h3>Thank you for your order</h3>
+
+</div>
 
 
-<p>Thank you for your order</p>
-<p>Order id: @orderId</p>
+<div class="container px-4">
+    <div class="row">
+        <div class="col">
+            Order number
+        </div>
+        <div class="col">
+            <p>Order id: @orderId</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Pickup time
+        </div>
+        <div class="col">
+            ...
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Address
+        </div>
+        <div class="col">
+            ...
+        </div>
+    </div>
+</div>
+
+<div class="px-4" style="margin-top:50px;">
+    <p> Read more about the <a href="https://www.un.org/development/desa/disabilities/envision2030.html">17 Sustainable Development Goals</a>  </p>
+
+
+</div>
+
 
 
 @code {
