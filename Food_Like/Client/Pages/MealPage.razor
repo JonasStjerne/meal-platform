@@ -21,7 +21,7 @@
             position: absolute;
         }
 
-        .item{
+    .item {
         margin: 0px;
         padding: 0px;
         position: relative;
@@ -30,21 +30,21 @@
         overflow: hidden;
     }
 
-    .item .img-wrap:before {
-        content: '';
-        background-image: linear-gradient(to top, rgba(239,239,239,255), rgba(239,239,239,0));
-        position: absolute;
-        height: 100px;
-        right: 0;
-        bottom: 0;
-        left: 0;
-    }
+        .item .img-wrap:before {
+            content: '';
+            background-image: linear-gradient(to top, rgba(239,239,239,255), rgba(239,239,239,0));
+            position: absolute;
+            height: 100px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
 
-    .item .img-wrap:after {
-        content: '';
-        display: block;
-        height: 9999px;
-    }
+        .item .img-wrap:after {
+            content: '';
+            display: block;
+            height: 9999px;
+        }
 
     .img-wrap img {
         width: 100%;
@@ -79,6 +79,14 @@
         text-align: center;
     }
 </style>
+
+@if (errorMessage.Length > 0)
+{
+    <div class="alert alert-danger d-flex justify-content-center" role="alert">
+        <p>@errorMessage</p>
+    </div>
+}
+
 
 @if (meal != null)
 {
@@ -186,13 +194,18 @@ else
 
 
     private Meal meal;
+    private Meal meal2;
+
     private string rating = "";
-    private string[] ingridients;
+    private string[] ingridients = { };
     private int portions = 1;
 
 
     private string mealPicSrc;
     private string sellerPicSrc;
+
+    private String errorMessage = "";
+
 
 
     private void Checkout()
@@ -219,93 +232,36 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        meal = createTestMeal(mealId);
-        await loadTestImages();
 
-        // meal = HentFraServer(mealId);
-
-
-        var base64 = Convert.ToBase64String(meal.MealPicture);
-        mealPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
-
-        base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
-        sellerPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
-
-
-        if (meal.Seller.Rating == -1)
+        var response = await Http.GetAsync("api/meal/1" );
+        if (response.IsSuccessStatusCode)
         {
-            rating = "No ratings";
+            meal = await response.Content.ReadFromJsonAsync<Meal>();
+            var base64 = Convert.ToBase64String(meal.MealPicture);
+            mealPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
+
+            base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
+            sellerPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
+
+            ingridients = meal.Ingridients.Split(',');
+
+            if (meal.Seller.Rating == -1)
+            {
+                rating = "No ratings";
+            }
+            else
+            {
+                rating = meal.Seller.Rating.ToString("#.#");
+            }
+
+
         }
         else
         {
-            rating = meal.Seller.Rating.ToString("#.#");
+            errorMessage = "Error retrieving meal";
+            StateHasChanged();
         }
-    }
 
-    private async Task loadTestImages()
-    {
-        meal.MealPicture = await Http.GetByteArrayAsync("/assets/Spaghettichicken.png");
-        meal.Seller.SellerNavigation.ProfilePicture = await Http.GetByteArrayAsync("/assets/Hanne.png");
-    }
-
-    //
-    // For local test
-    //
-    private Meal createTestMeal(int id)
-    {
-        var meal = new Meal();
-        meal.MealId = id;
-        meal.PortionPrice = 20;
-        meal.Portions = 5;
-        meal.Titel = "Spagetti w/chicken";
-        meal.PickupFrom = new DateTime(2021, 1, 20, 19, 0, 0);
-        meal.PickupTo = new DateTime(2021, 1, 20, 19, 20, 0);
-        meal.MealDescription = "I’ll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.";
-
-
-        meal.Ingridients = "Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto";
-        ingridients = meal.Ingridients.Split(',');
-
-        var buyer = new Buyer();
-        buyer.FirstName = "Hanne";
-
-        Address address = new Address();
-        address.Line1 = "Boulevarden 14";
-        address.City = "Aalborg";
-
-        Seller seller = new Seller();
-        seller.SellerNavigation = buyer;
-        seller.Address = address;
-
-        seller.Meal = new List<Meal>();
-        seller.Meal.Add(meal);
-
-        meal.Seller = seller;
-
-        meal.Review = new List<Review>();
-        Review review1 = new Review();
-        review1.Rating = 3;
-        review1.Meal = meal;
-
-        Review review2 = new Review();
-        review2.Rating = 4;
-        review2.Meal = meal;
-
-        meal.Review.Add(review1);
-        meal.Review.Add(review2);
-
-        meal.Mealorder = new List<Mealorder>();
-
-        Mealorder order1 = new Mealorder();
-        order1.Quantity = 1;
-
-        Mealorder order2 = new Mealorder();
-        order2.Quantity = 1;
-
-        meal.Mealorder.Add(order1);
-        meal.Mealorder.Add(order2);
-
-        return meal;
     }
 
 }

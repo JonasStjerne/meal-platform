@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.1" PrivateAssets="all" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
+    <PackageReference Include="Tewr.Blazor.FileReader" Version="3.2.0.21211" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,5 +39,8 @@
     <Content Update="wwwroot\css\Omnes-Font\%40font-face\omnes.ttf">
       <Link>wwwroot\css\%40font-face\omnes.ttf</Link>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Tewr.Blazor.FileReader" />
   </ItemGroup>
 </Project>
