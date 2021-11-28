@@ -78,5 +78,28 @@ namespace Food_Like.Server.Controllers
             }
         }
 
+        [HttpGet("{id}/ratings")]
+        public IActionResult getRatings(int id, Auth<dynamic> request)
+        {
+            using (var context = new foodlikeContext())
+            {
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(request);
+
+                if (authState.FoundUser == false)
+                {
+                    return Unauthorized();
+                }
+
+                var reviews = context.Review.Where(review => review.Meal.SellerId == id).ToList();
+                if (reviews == null)
+                {
+                    return NotFound();
+                }
+                return Ok(reviews);
+            }
+        }
+
     }
 }
