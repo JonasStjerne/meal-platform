@@ -135,5 +135,33 @@ namespace Food_Like.Server.Controllers
             }
         }
 
+        [HttpPost("review/{id}")]
+        public IActionResult ReviewMeal(int id, Auth<Review> auth)
+        {
+            using (var context = new foodlikeContext())
+            {
+                var userService = new UserService(context);
+                var authState = userService.GetUser(auth);
+
+                if (authState.FoundUser == false || !userService.BoughtMeal(authState, id) || userService.HasMadeReview(authState, id))
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    //Set reviewer as the authorized user
+                    auth.Request.BuyerId = authState.User.BuyerId;
+                    //Set the meal id as the one from the uri
+                    auth.Request.MealId = id;
+                    context.Review.Add(auth.Request);
+                    context.SaveChanges();
+                    return Ok();
+                } catch (Exception)
+                {
+                    return StatusCode(500);
+                }
+            }
+        }
     }
 }

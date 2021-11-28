@@ -60,5 +60,15 @@ namespace Food_Like.Server.Services
         {
             return _dbContext.Seller.Any(seller => seller.SellerId == authState.User.BuyerId);
         }
+
+        public bool BoughtMeal(AuthState authState, int mealId)
+        {
+            return _dbContext.Mealorder.Any(order => order.BuyerId == authState.User.BuyerId && order.MealId == mealId);
+        }
+
+        public bool HasMadeReview(AuthState authState, int mealId)
+        {
+            return _dbContext.Review.Any(review => review.BuyerId == authState.User.BuyerId && review.MealId == mealId);
+        }
     }
 }
