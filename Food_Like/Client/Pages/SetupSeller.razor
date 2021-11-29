@@ -76,7 +76,7 @@
         };
 
 
-        Seller data = new Seller()
+        SetupSellerRequest data = new SetupSellerRequest()
         {
             KitchenPicture = new byte[0],
             Address = address
@@ -88,7 +88,7 @@
         //    KitchenPicture = new byte[0]
         //};
 
-        Auth<Seller> authRequest = new Auth<Seller>(token)
+        Auth<SetupSellerRequest> authRequest = new Auth<SetupSellerRequest>(token)
         {
             Request = data
         };
@@ -101,7 +101,7 @@
         }
         else
         {
-            errorMessage = "Somethin went wrong";
+            errorMessage = "Something went wrong";
             StateHasChanged();
         }
     }

@@ -9,7 +9,7 @@ namespace Food_Like.Shared
     {
         public string EncryptedPassword { get; set; }
         public string Email { get; set; }
-        public T Request { get; set; }
+        public T? Request { get; set; }
 
         public Auth(string token)
         {
