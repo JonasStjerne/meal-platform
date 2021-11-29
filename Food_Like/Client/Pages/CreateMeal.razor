@@ -1,0 +1,130 @@
+﻿@page "/createmeal"
+@using Food_Like.Shared
+@inject NavigationManager NavManager
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+
+
+<style>
+
+    .form-signin {
+        width: 100%;
+        max-width: 330px;
+        padding: 15px;
+        margin: auto;
+    }
+
+        .form-signin .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin input {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+</style>
+<form class="form-signin">
+    <input type="text" class="form-control mb-2" placeholder="Titel" @bind="titel" required autofocus>
+
+    <textarea type="text" class="form-control mb-2" rows="10" @bind="mealDescription" required>
+    Description
+    </textarea>
+
+    <input type="text" class="form-control mb-2" placeholder="Ingridients" @bind="ingridients" required>
+
+    <label for="pickupfrom">Pick up from</label>
+    <input id="pickupfrom" type="datetime-local" class="form-control mb-2" @bind-value="pickupFrom" required>
+
+    <label for="pickupto">Pick up to</label>
+    <input id="pickupto" type="datetime-local" class="form-control mb-2" @bind="pickupTo" required>
+
+    <div class="container-fluid">
+        <div class="row d-flex justify-content-between">
+            <div class="col-4">
+                <label for="portions">Portions Available</label>
+                <input id="portions" type="number" class="form-control mb-2" @bind="portions" required>
+            </div>
+            <div class="col-4">
+                <label for="portionprice">Portion price</label>
+                <input id="portionprice" type="number" class="form-control mb-2" @bind="portionPrice" required>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="mt-4 btn btn-lg btn-primary btn-block" @onclick="submitCreateMeal">Create Meal</button>
+</form>
+@if (errorMessage.Length > 0)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@errorMessage</p>
+    </div>
+}
+
+
+@code {
+    const string credentials = "credentials";
+    private string token { get; set; }
+
+
+    private string titel { get; set; }
+    private sbyte portions { get; set; }
+    private decimal portionPrice { get; set; }
+    private string mealDescription { get; set; }
+    private string ingridients { get; set; }
+    private DateTime pickupFrom = DateTime.Now;
+    private DateTime pickupTo = DateTime.Now.AddMinutes(30);
+    private byte[] mealPicture { get; set; }
+
+
+
+    private string errorMessage = "";
+
+    protected async override void OnInitialized()
+    {
+        token = await localStore.GetItemAsync<string>(credentials);
+    }
+
+    private async void submitCreateMeal()
+    {
+        errorMessage = "";
+        CreateMealRequest data = new CreateMealRequest()
+        {
+            Titel = titel,
+            Portions = portions,
+            PortionPrice = portionPrice,
+            MealDescription = mealDescription,
+            Ingridients = ingridients,
+            PickupFrom = pickupFrom,
+            PickupTo = pickupTo,
+            MealPicture = new byte[0]
+        };
+
+        Auth<CreateMealRequest> authRequest = new Auth<CreateMealRequest>(token)
+        {
+            Request = data
+        };
+
+        using var response = await Http.PostAsJsonAsync("api/meal/create", authRequest);
+        if (response.IsSuccessStatusCode)
+        {
+            NavManager.NavigateTo("/home");
+        }
+        else
+        {
+            errorMessage = "Something went wrong";
+            StateHasChanged();
+        }
+    }
+
+}
+
+@* Bootstrap 12/11 21 https://getbootstrap.com/docs/4.5/examples/ *@
