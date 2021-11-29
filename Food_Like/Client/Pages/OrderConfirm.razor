@@ -1,12 +1,93 @@
 ﻿@page "/orderconfirm/{mealId:int}/{portions:int}"
 @inject NavigationManager NavigationManager
+@layout MealLayout
+@inject HttpClient Http
+@using Food_Like.Shared;
+@inject Blazored.LocalStorage.ILocalStorageService localStore
 
 
-<p>Current meal: @mealId</p>
 
-<p>Selected portions: @portions</p>
+<div class="px-4" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+    <img src="/assets/back.png" />
+</div>
 
-<button type="button" class="btn btn-primary" @onclick="Confirm">Confirm </button>
+
+@if (errorMessage.Length > 0)
+{
+    <div class="alert alert-danger d-flex justify-content-center" role="alert">
+        <p>@errorMessage</p>
+    </div>
+}
+
+@if (meal != null)
+{
+    <div class="container px-4">
+
+        <div class="row">
+            <div class="col">
+                <img src="@mealPicSrc" alt="..." />
+            </div>
+            <div class="col">
+
+                <p>@meal.Titel</p>
+
+                <p>@portions portion</p>
+
+
+                <p>@meal.PortionPrice kr payed at pickup</p>
+
+                <p> Pickup at @meal.PickupFrom.ToString("HH:mm") - @meal.PickupTo.ToString("HH:mm , dd/MM")</p>
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container px-4" style="margin-top:80px;">
+        <div class="row" style="margin-top:50px;">
+            <div class="col">
+                <img src="/assets/house.png" style="height:77px; width:77px;">
+            </div>
+            <div class="col">
+                <p> You will recieve the pickup adress after confirming this order</p>
+            </div>
+        </div>
+        <div class="row" style="margin-top:50px;">
+            <div class="col">
+                <img src="/assets/pickup.png" style="height:77px; width:77px;">
+            </div>
+            <div class="col">
+                <p>Bring your food container and pickup the meal at 19:00-19:20 on 20/1</p>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:50px;">
+            <div class="col">
+                <img src="/assets/createmeal.png" style="height:77px; width:77px;">
+            </div>
+            <div class="col">
+                <p>Pay with mobilepay through the “Pay” button on the meal reservation. Your reservations can be found on the front page</p>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="fixed-bottom px-4" style="padding-bottom:1.5rem;" align="center">
+        <button style="height:56px; width:190px;" type="button" class="btn btn-primary" @onclick="Confirm">Confirm </button>
+    </div>
+
+
+}
+else
+{
+    <div>Loading meal ...</div>
+}
+
 
 @code {
 
@@ -16,14 +97,63 @@
     [Parameter]
     public int portions { get; set; }
 
-    private void Confirm()
+    private Meal meal;
+
+    private string mealPicSrc;
+
+    private String errorMessage = "";
+
+    private string token { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        token = await localStore.GetItemAsync<string>("credentials");
+
+        var response = await Http.GetAsync("api/meal/" + mealId.ToString());
+        if (response.IsSuccessStatusCode)
+        {
+            this.meal = await response.Content.ReadFromJsonAsync<Meal>();
+
+            var base64 = Convert.ToBase64String(meal.MealPicture);
+            mealPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
+        }
+        else
+        {
+            errorMessage = "Error retrieving meal";
+            StateHasChanged();
+        }
+
+    }
+
+    private async void Confirm()
     {
         Console.WriteLine("confirm mealId=" + mealId + ", " + portions);
+        if (token == null)
+        {
+            errorMessage = "You must be logged in to order meal";
+            StateHasChanged();
+            return;
+        }
 
         // Create order from mealid and portions
-        int orderId = 99;
+        Auth<sbyte> authRequest = new Auth<sbyte>(token)
+        {
+            Request = ((sbyte)portions)
+        };
 
-        NavigationManager.NavigateTo("/orderconfirmation/" + orderId.ToString());
+        using var response = await Http.PostAsJsonAsync("api/meal/" + mealId.ToString(), authRequest);
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<GenericResponse<int>>();
+            NavigationManager.NavigateTo("/orderconfirmation/" + result.Data.ToString());
+        }
+        else
+        {
+            errorMessage = "Something went wrong";
+            StateHasChanged();
+        }
+
     }
 
 }
+
