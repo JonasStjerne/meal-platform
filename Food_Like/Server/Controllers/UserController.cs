@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Food_Like.Server.Controllers
 {
@@ -79,25 +80,20 @@ namespace Food_Like.Server.Controllers
         }
 
         [HttpGet("{id}/ratings")]
-        public IActionResult getRatings(int id, Auth<dynamic> request)
+        public async Task<ActionResult<List<Review>>> GetRatings(int id)
         {
             using (var context = new foodlikeContext())
             {
-                //Standard check for authorized access and make sure is seller
-                var userService = new UserService(context);
-                var authState = userService.GetUser(request);
-
-                if (authState.FoundUser == false)
+                try
                 {
-                    return Unauthorized();
+                    return context.Review
+                        .Where(e => e.Meal.SellerId == id).ToList();
+                }
+                catch (Exception exp)
+                {
+                    return BadRequest(exp);
                 }
 
-                var reviews = context.Review.Where(review => review.Meal.SellerId == id).ToList();
-                if (reviews == null)
-                {
-                    return NotFound();
-                }
-                return Ok(reviews);
             }
         }
 
