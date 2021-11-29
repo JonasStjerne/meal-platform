@@ -19,73 +19,74 @@
     </div>
 }
 
+@if (meal != null)
+{
+    <div class="container px-4">
 
-<div class="container px-4">
-
-    <div class="row">
-        <div class="col">
-            <img src="/assets/Spaghettichicken.png" />
-        </div>
-        <div class="col">
-            <p>Current meal: @mealId</p>
-
-            <p>Selected portions: @portions</p>
-
-            @if (meal != null)
-            {
+        <div class="row">
+            <div class="col">
+                <img src="@mealPicSrc" alt="..." />
+            </div>
+            <div class="col">
 
                 <p>@meal.Titel</p>
-                <p>@meal.Ingridients</p>
-            }
-            else
-            {
-                <div>Loading meal ...</div>
-            }
+
+                <p>@portions portion</p>
 
 
-        </div>
-    </div>
-</div>
+                <p>@meal.PortionPrice kr payed at pickup</p>
 
-<div class="container px-4" style="margin-top:80px;">
-    <div class="row" style="margin-top:50px;">
-        <div class="col">
-            <img src="/assets/house.png" style="height:77px; width:77px;">
-        </div>
-        <div class="col">
-            <p> You will recieve the pickup adress after confirming this order</p>
-        </div>
-    </div>
-    <div class="row" style="margin-top:50px;">
-        <div class="col">
-            <img src="/assets/pickup.png" style="height:77px; width:77px;">
-        </div>
-        <div class="col">
-            <p>Bring your food container and pickup the meal at 19:00-19:20 on 20/1</p>
+                <p> Pickup at @meal.PickupFrom.ToString("HH:mm") - @meal.PickupTo.ToString("HH:mm , dd/MM")</p>
+
+
+            </div>
         </div>
     </div>
 
-    <div class="row" style="margin-top:50px;">
-        <div class="col">
-            <img src="/assets/createmeal.png" style="height:77px; width:77px;">
+
+    <div class="container px-4" style="margin-top:80px;">
+        <div class="row" style="margin-top:50px;">
+            <div class="col">
+                <img src="/assets/house.png" style="height:77px; width:77px;">
+            </div>
+            <div class="col">
+                <p> You will recieve the pickup adress after confirming this order</p>
+            </div>
         </div>
-        <div class="col">
-            <p>Pay with mobilepay through the “Pay” button on the meal reservation. Your reservations can be found on the front page</p>
+        <div class="row" style="margin-top:50px;">
+            <div class="col">
+                <img src="/assets/pickup.png" style="height:77px; width:77px;">
+            </div>
+            <div class="col">
+                <p>Bring your food container and pickup the meal at 19:00-19:20 on 20/1</p>
+            </div>
         </div>
+
+        <div class="row" style="margin-top:50px;">
+            <div class="col">
+                <img src="/assets/createmeal.png" style="height:77px; width:77px;">
+            </div>
+            <div class="col">
+                <p>Pay with mobilepay through the “Pay” button on the meal reservation. Your reservations can be found on the front page</p>
+            </div>
+        </div>
+
     </div>
 
-</div>
 
 
 
 
-
-<div class="fixed-bottom px-4" style="padding-bottom:1.5rem;" align="center">
-    <button style="height:56px; width:190px;" type="button" class="btn btn-primary" @onclick="Confirm">Confirm </button>
-</div>
-
+    <div class="fixed-bottom px-4" style="padding-bottom:1.5rem;" align="center">
+        <button style="height:56px; width:190px;" type="button" class="btn btn-primary" @onclick="Confirm">Confirm </button>
+    </div>
 
 
+}
+else
+{
+    <div>Loading meal ...</div>
+}
 
 
 @code {
@@ -97,6 +98,8 @@
     public int portions { get; set; }
 
     private Meal meal;
+
+    private string mealPicSrc;
 
     private String errorMessage = "";
 
@@ -110,6 +113,9 @@
         if (response.IsSuccessStatusCode)
         {
             this.meal = await response.Content.ReadFromJsonAsync<Meal>();
+
+            var base64 = Convert.ToBase64String(meal.MealPicture);
+            mealPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
         }
         else
         {
@@ -122,6 +128,12 @@
     private async void Confirm()
     {
         Console.WriteLine("confirm mealId=" + mealId + ", " + portions);
+        if (token == null)
+        {
+            errorMessage = "You must be logged in to order meal";
+            StateHasChanged();
+            return;
+        }
 
         // Create order from mealid and portions
         Auth<sbyte> authRequest = new Auth<sbyte>(token)

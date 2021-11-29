@@ -22,8 +22,7 @@ namespace Food_Like.Server.Controllers
         {
             using (var context = new foodlikeContext())
             {
-                
-                //var result = context.Meal.ToList().Find(meal => meal.MealId == id);
+               
                 var result = context.Meal
                   .Include(m => m.Seller)
                       .ThenInclude(s => s.SellerNavigation)

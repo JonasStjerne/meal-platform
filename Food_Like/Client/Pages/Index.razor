@@ -1,18 +1,20 @@
 @page "/"
 @inject IJSRuntime JS
 @layout IndexLayout
+@inject HttpClient Http
+@using Food_Like.Shared;
 
 <style>
-     .centerdiv {
+    .centerdiv {
         display: flex;
         justify-content: center;
         margin: 5px;
     }
 
 
-    .card-img-top{
-        width:135px;
-        height:97px;
+    .card-img-top {
+        width: 135px;
+        height: 97px;
     }
 
     .fixedbutton {
@@ -27,9 +29,9 @@
         line-height: 30px;
     }
 
-    div.fixedbutton > a:link {
-        text-decoration-line:none;
-    }
+        div.fixedbutton > a:link {
+            text-decoration-line: none;
+        }
 
     .carousel .carousel-indicators li {
         background-color: #C4C4C4;
@@ -72,7 +74,6 @@
         letter-spacing: -0.01em;
         padding: 0px;
     }
-
 </style>
 
 <div class="signin">
@@ -87,7 +88,7 @@
             <a href="createaccount" class="btn btn-secondary btn-block">Sign up</a>
         </div>
     </div>
- </div>
+</div>
 
 
 
@@ -125,15 +126,15 @@
 
                         @for (var col = 0; col < 3; col++)
                         {
-                            MealCard meal = cards[row * 3 + col];
+                            MealCard m = cards[row * 3 + col];
                             <div class="col-lg-4">
-                                
-                                    <img src="@meal.image"
-                                         class="card-img-top"
-                                         alt="..." />
-                                        <p class="card-title">@meal.titel</p>
-                                    
-                                
+
+                                <img src="@m.image"
+                                     class="card-img-top"
+                                     alt="..." />
+                                <p class="card-title">@m.titel</p>
+
+
                             </div>
                         }
 
@@ -188,7 +189,7 @@
 
                         <div class="centerdiv">
                             <h3> Step @(stepnumber)</h3>
-                            </div>
+                        </div>
                         <div class="centerdiv">
                             <p>@(c.label)</p>
                         </div>
@@ -291,18 +292,29 @@
         await resetCarousel("#carouselExampleCaptions");
     }
 
-    protected async override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        cards.Add(new MealCard("/assets/Spaghettichicken.png", "Spaghetti w/ chicken"));
-        cards.Add(new MealCard("/assets/SpaghettiMeatballs.png", "Spaghetti & Meatballs"));
-        cards.Add(new MealCard("/assets/Spaghettibeef.png", "Spaghetti w/ beef"));
-        cards.Add(new MealCard("/assets/Spaghettichicken.png", "Spaghetti w/ chicken"));
-        cards.Add(new MealCard("/assets/SpaghettiMeatballs.png", "Spaghetti & Meatballs"));
-        cards.Add(new MealCard("/assets/Spaghettibeef.png", "Spaghetti w/ beef"));
-        cards.Add(new MealCard("/assets/Spaghettichicken.png", "Spaghetti w/ chicken"));
-        cards.Add(new MealCard("/assets/SpaghettiMeatballs.png", "Spaghetti & Meatballs"));
-        cards.Add(new MealCard("/assets/Spaghettibeef.png", "Spaghetti w/ beef"));
-        cards.Add(new MealCard("/assets/Spaghettichicken.png", "Spaghetti w/ chicken"));
+
+        var response = await Http.GetAsync("api/meal/topmeals");
+        if (response.IsSuccessStatusCode)
+        {
+            var meals = await response.Content.ReadFromJsonAsync<List<Meal>>();
+            
+            foreach(var meal in meals)
+            {
+                var base64 = Convert.ToBase64String(meal.MealPicture);
+                var mealPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
+                var card = new MealCard(mealPicSrc, meal.Titel);
+                cards.Add(card);
+            }
+        }
+        else
+        {
+            cards.Add(new MealCard("/assets/Spaghettichicken.png", "Spaghetti w/ chicken"));
+            cards.Add(new MealCard("/assets/SpaghettiMeatballs.png", "Spaghetti & Meatballs"));
+            cards.Add(new MealCard("/assets/Spaghettibeef.png", "Spaghetti w/ beef"));
+        }
+        StateHasChanged();
 
         await JS.InvokeVoidAsync("startCarousel", "#carouselExampleCaptions");
     }

@@ -233,7 +233,7 @@ else
     protected async override Task OnInitializedAsync()
     {
 
-        var response = await Http.GetAsync("api/meal/1" );
+        var response = await Http.GetAsync("api/meal/" + mealId.ToString() );
         if (response.IsSuccessStatusCode)
         {
             meal = await response.Content.ReadFromJsonAsync<Meal>();
