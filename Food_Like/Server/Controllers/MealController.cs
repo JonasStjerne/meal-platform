@@ -136,7 +136,7 @@ namespace Food_Like.Server.Controllers
         }
 
         [HttpPost("review/{id}")]
-        public IActionResult ReviewMeal(int id, Auth<Review> auth)
+        public IActionResult ReviewMeal(int id, Auth<CreateReviewRequest> auth)
         {
             using (var context = new foodlikeContext())
             {
@@ -150,11 +150,20 @@ namespace Food_Like.Server.Controllers
 
                 try
                 {
+                    Review review = new Review()
+                    {
+                        //Set reviewer as the authorized user
+                        BuyerId = authState.User.BuyerId,
+                        MealId = id,
+                        Rating = auth.Request.Rating,
+                        ReviewDescription = auth.Request.ReviewDescription
+
+                    };
                     //Set reviewer as the authorized user
-                    auth.Request.BuyerId = authState.User.BuyerId;
+                    //auth.Request.BuyerId = authState.User.BuyerId;
                     //Set the meal id as the one from the uri
-                    auth.Request.MealId = id;
-                    context.Review.Add(auth.Request);
+                    //auth.Request.MealId = id;
+                    context.Review.Add(review);
                     context.SaveChanges();
                     return Ok();
                 } catch (Exception)

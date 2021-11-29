@@ -25,7 +25,7 @@ namespace Food_Like.Server.Controllers
         }
 
         [HttpPost("setupseller")]
-        public dynamic SetupSeller(Auth<Seller> request)
+        public dynamic SetupSeller(Auth<SetupSellerRequest> request)
         {
             using (var context = new foodlikeContext())
             {
