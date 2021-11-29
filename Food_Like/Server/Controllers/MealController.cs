@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Food_Like.Server.Controllers
 {
@@ -50,18 +51,46 @@ namespace Food_Like.Server.Controllers
                 }
                 try
                 {
-                    if (! (request.Request.PickupFrom > DateTime.Now) && request.Request.PickupFrom.AddMinutes(30) > request.Request.PickupTo)
+                    //Validate if pickup is in the future and that the minimum pickup interval is 30 minutes
+                    if (!(request.Request.PickupFrom > DateTime.Now.AddMinutes(-5)) || !(request.Request.PickupFrom.AddMinutes(30) < request.Request.PickupTo))
                     {
                         throw new Exception();
                     }
+
                     request.Request.SellerId = authState.User.BuyerId;
-                    context.Meal.Add(request.Request);
+
+                    //var meal = new Meal()
+                    //{
+                    //    SellerId = authState.User.BuyerId,
+                    //    Portions = request.Request.Portions,
+                    //    PortionPrice = request.Request.PortionPrice,
+                    //    MealDescription = request.Request.MealDescription,
+                    //    Ingridients = request.Request.Ingridients,
+                    //    PickupFrom = request.Request.PickupFrom,
+                    //    PickupTo = request.Request.PickupTo,
+                    //    MealPicture = request.Request.MealPicture
+                    //};
+
+                    //var testdata = new Meal()
+                    //{
+                    //    SellerId = 2,
+                    //    Portions = 4,
+                    //    PortionPrice = 20,
+                    //    MealDescription = "Description af meal",
+                    //    Ingridients = "Ingridients list",
+                    //    PickupFrom = DateTime.Now,
+                    //    PickupTo = DateTime.Now.AddHours(1),
+                    //    MealPicture = new byte[0]
+                    //};
+
+                    context.Add(request.Request);
+
                     context.SaveChanges();
                     return Ok();
                 }
-                catch (Exception)
+                catch (Exception exep)
                 {
-                    return BadRequest();
+                    return BadRequest(exep);
                 }
 
             }
