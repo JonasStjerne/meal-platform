@@ -96,7 +96,7 @@
     private async void submitCreateMeal()
     {
         errorMessage = "";
-        CreateMealRequest data = new CreateMealRequest()
+        Meal data = new Meal()
         {
             Titel = titel,
             Portions = portions,
@@ -108,7 +108,7 @@
             MealPicture = new byte[0]
         };
 
-        Auth<CreateMealRequest> authRequest = new Auth<CreateMealRequest>(token)
+        Auth<Meal> authRequest = new Auth<Meal>(token)
         {
             Request = data
         };

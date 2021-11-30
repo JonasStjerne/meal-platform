@@ -37,7 +37,7 @@ namespace Food_Like.Server.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult createMeal(Auth<Meal> request)
+        public IActionResult CreateMeal(Auth<Meal> request)
         {
             using (var context = new foodlikeContext())
             {
