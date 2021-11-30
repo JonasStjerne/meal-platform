@@ -98,7 +98,7 @@ namespace Food_Like.Server.Controllers
         }
 
         [HttpGet("mymeals")]
-        public async Task<ActionResult<List<Meal>>> GetMyMeals([FromBody] Auth<int> request)
+        public async Task<ActionResult<List<Meal>>> GetMyMeals([FromBody] Auth<dynamic> request)
         {
             using (var context = new foodlikeContext())
             {
