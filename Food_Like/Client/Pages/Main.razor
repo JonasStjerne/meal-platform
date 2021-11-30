@@ -1,49 +1,59 @@
 ﻿@page "/home"
 @using Food_Like.Shared
 @layout MainPageLayout
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService localStore
 
 
 <div class="d-flex justify-content-between align-items-center">
-    <img style="height: 50px;"src="/assets/logo.png"/>
+    <img style="height: 50px;" src="/assets/logo.png" />
     <div>
-        <NavLink href= "@(isSeller() ? "/createmeal" : "/setupseller")"><button style="height: 30px;" class="px-4 btn btn-primary"><p class="bold text-white text-center text-align">Sell</p></button></NavLink>
+        <NavLink href="@(isSeller() ? "/createmeal" : "/setupseller")"><button style="height: 30px;" class="px-4 btn btn-primary"><p class="bold text-white text-center text-align">Sell</p></button></NavLink>
         <img src="" />
     </div>
 </div>
 
 <div>
-    <p class="bold">My Reservations</p>
-    <div class="cardshadow rounded d-flex flex-column">
-        <div class="w-auto mx-2 d-flex justify-content-between">
-            <div>
-                <img />
-                <img />
-            </div>
-            <p>Titel</p>
+    @if (myMeals.Count() > 0)
+    {
+        <p class="bold">My Reservations</p>
+        @foreach(var meal in myMeals)
+        {
+            <div class="cardshadow rounded d-flex flex-column">
+                <div class="w-auto mx-2 d-flex justify-content-between">
+                    <div>
+                        <img />
+                        <img />
+                    </div>
+                    <p>@meal.Titel</p>
 
-            <button class="btn btn-primary"><p class="bold text-white">Pay</p></button>
-            <img src="assets/callIcon.png" width="50" alt="Alternate Text" />
-        </div>
-        <div class="w-auto mx-2">
-            <table class="w-100 text-center">
-                <thead>
-                    <tr>
-                        <td>Pickup at</td>
-                        <td>Adress</td>
-                        <td>Price</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Date</td>
-                        <td>adresse</td>
-                        <td>price</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+                    <button class="btn btn-primary"><p class="bold text-white">Pay</p></button>
+                    <img src="assets/callIcon.png" width="50" alt="Alternate Text" />
+                </div>
+                <div class="w-auto mx-2">
+                    <table class="w-100 text-center">
+                        <thead>
+                            <tr>
+                                <td>Pickup at</td>
+                                <td>Adress</td>
+                                <td>Price</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@meal.PickupFrom - @meal.PickupFrom</td>
+                                <td>@meal.Seller.Address</td>
+                                <td>@meal.PortionPrice</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
 </div>
+
+
 
 <div>
     <div class="d-flex justify-content-between">
@@ -91,9 +101,23 @@
 
 @code {
 
-    private Mealorder orders = new Mealorder();
+    private List<Meal> myMeals = new List<Meal>() { };
+    private List<Meal> mealReservations { get; set; }
+
+    protected async override void OnInitialized()
+    {
+        var token = await localStore.GetItemAsync<string>("credentials");
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "api/user/mymeals");
+        request.Headers.Add("Auth", "mail@mail.dk-.-pass");
+        //System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(token))
+        using var response = await Http.SendAsync(request);
+        var myMeals = await response.Content.ReadFromJsonAsync<List<Meal>>();
+        Console.WriteLine(myMeals.Count());
+        StateHasChanged();
 
 
+    }
     private bool isSeller()
     {
         return false;
