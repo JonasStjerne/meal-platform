@@ -98,13 +98,16 @@ namespace Food_Like.Server.Controllers
         }
 
         [HttpGet("mymeals")]
-        public async Task<ActionResult<List<Meal>>> GetMyMeals([FromBody] Auth<dynamic> request)
+        public async Task<ActionResult<List<Meal>>> GetMyMeals([FromHeader] string Authorization)
         {
             using (var context = new foodlikeContext())
             {
+
+
+
                 //Standard check for authorized access and make sure is seller
                 var userService = new UserService(context);
-                var authState = userService.GetUser(request);
+                var authState = userService.GetUser(Authorization);
 
                 if (authState.FoundUser == false || !userService.UserIsSeller(authState))
                 {
