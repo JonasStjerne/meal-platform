@@ -14,21 +14,22 @@
 </div>
 
 <div>
-    @if (myMeals.Count() > 0)
-    {
+   @if (myMeals == null)
+            {
+                <p>Loading</p>
+            } 
+   else {
         <p class="bold">My Reservations</p>
-        @foreach(var meal in myMeals)
-        {
+        @foreach (var meal in myMeals) { 
             <div class="cardshadow rounded d-flex flex-column">
-                <div class="w-auto mx-2 d-flex justify-content-between">
+                <div class="w-auto mx-2 d-flex justify-content-between  p-2">
                     <div>
                         <img />
                         <img />
                     </div>
                     <p>@meal.Titel</p>
-
-                    <button class="btn btn-primary"><p class="bold text-white">Pay</p></button>
-                    <img src="assets/callIcon.png" width="50" alt="Alternate Text" />
+                    <button class="btn btn-primary"><p class="bold text-white m-0">Pay</p></button>
+                    <img src="assets/callIcon.png" width="25" height="25" alt="Alternate Text" />
                 </div>
                 <div class="w-auto mx-2">
                     <table class="w-100 text-center">
@@ -41,16 +42,47 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>@meal.PickupFrom - @meal.PickupFrom</td>
-                                <td>@meal.Seller.Address</td>
-                                <td>@meal.PortionPrice</td>
+                                <td><p class="text-primary">@meal.PickupFrom.ToShortDateString() <br /> Kl. @meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm")</p></td>
+                                <td><p class="text-break text-primary">myMeals[i].Seller.Address</p></td>
+                                <td><p class="text-primary">@meal.PortionPrice</p></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         }
-    }
+   }
+</div>
+
+<div>
+    <p class="bold m-1">Meal for sale</p>
+    <div class="cardshadow rounded d-flex flex-column">
+        <div class="w-auto mx-2 d-flex justify-content-between p-2">
+            <div>
+                <img src="assets/TestAssets/image 1.png"/>
+            </div>
+            <p>Titel</p>
+            <button class="btn btn-primary"><p class="bold text-white m-0">Orders</p></button>
+        </div>
+        <div class="w-auto mx-2">
+            <table class="w-100 text-center">
+                <thead>
+                    <tr>
+                        <td>Pickup at</td>
+                        <td>Sold</td>
+                        <td>Price</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PickupFrom - PickupTo</td>
+                        <td>Address</td>
+                        <td>PortionPrice</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 
@@ -101,22 +133,18 @@
 
 @code {
 
-    private List<Meal> myMeals = new List<Meal>() { };
+    private Meal[] myMeals;
     private List<Meal> mealReservations { get; set; }
 
-    protected async override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         var token = await localStore.GetItemAsync<string>("credentials");
 
         var request = new HttpRequestMessage(HttpMethod.Get, "api/user/mymeals");
-        request.Headers.Add("Auth", "mail@mail.dk-.-pass");
-        //System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(token))
-        using var response = await Http.SendAsync(request);
-        var myMeals = await response.Content.ReadFromJsonAsync<List<Meal>>();
-        Console.WriteLine(myMeals.Count());
-        StateHasChanged();
-
-
+        request.Headers.Add("Auth", token);
+        
+        var response = await Http.SendAsync(request);
+        myMeals = await response.Content.ReadFromJsonAsync<Meal[]>();
     }
     private bool isSeller()
     {
