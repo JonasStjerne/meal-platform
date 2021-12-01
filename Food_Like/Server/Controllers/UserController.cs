@@ -167,7 +167,7 @@ namespace Food_Like.Server.Controllers
                 {
                     
                     var response = context.Seller
-                        .Include(e => e.Meal).Ig
+                        .Include(e => e.Meal)
                         .Where(e => e.SellerId == authState.User.BuyerId)
                         .ToList();
                     
