@@ -133,10 +133,10 @@ namespace Food_Like.Server.Controllers
                         };
                         context.Mealorder.Add(order);
                         context.SaveChanges();
-                        var response = new GenericResponse<int>
+                        var response = new BuyMealResponse
                         {
-                            Sucess = true,
-                            Data = order.OrderId
+                            Success = true,
+                            OrderId = order.OrderId
                         };
                         return Ok(response);
                     }

@@ -16,29 +16,32 @@
     </div>
 }
 
-<div>
-    @if (order != null)
-    {
 
-        <p>@order.OrderId</p>
-        <p>@order.Quantity</p>
-        <p>@order.Meal.Titel</p>
-        <p>@order.Meal.Seller.SellerNavigation.FirstName</p>
-        <p>@order.Meal.Seller.Address.City</p>
-    }
-    else
-    {
-        <div>Loading order ...</div>
-    }
-</div>
-
+@if (order != null)
+{
 <div class="container px-4">
     <div class="row">
         <div class="col">
-            Order number
+            Order number:
         </div>
         <div class="col">
-            <p>Order id: @orderId</p>
+            @order.OrderId
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Portions:
+        </div>
+        <div class="col">
+            @order.Quantity
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Meal:
+        </div>
+        <div class="col">
+            @order.Meal.Titel
         </div>
     </div>
     <div class="row">
@@ -46,7 +49,7 @@
             Pickup time
         </div>
         <div class="col">
-            ...
+            @order.Meal.PickupFrom.ToString("HH:mm") - @order.Meal.PickupTo.ToString("HH:mm , dd/MM")
         </div>
     </div>
     <div class="row">
@@ -54,10 +57,28 @@
             Address
         </div>
         <div class="col">
-            ...
+            @order.Meal.Seller.SellerNavigation.FirstName
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Address
+        </div>
+        <div class="col">
+            @order.Meal.Seller.Address.Line1 <br /> @order.Meal.Seller.Address.City
         </div>
     </div>
 </div>
+
+
+}
+else
+{
+    <div>Loading order ...</div>
+}
+
+
+
 
 <div class="px-4" style="margin-top:50px;">
     <p> Read more about the <a href="https://www.un.org/development/desa/disabilities/envision2030.html">17 Sustainable Development Goals</a>  </p>

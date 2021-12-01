@@ -55,6 +55,14 @@
         -ms-interpolation-mode: bicubic;
     }
 
+    .back {
+        position: absolute;
+        left: 20px;
+        top: 19px;
+        z-index: 10;
+    }
+
+
     .price {
         height: 28px;
         width: 59px;
@@ -65,6 +73,7 @@
         right: 20px;
         top: 19px;
     }
+
 
     .content {
         position: absolute;
@@ -90,9 +99,12 @@
 
 @if (meal != null)
 {
+<div class="back">
+    <a href="/home"> <img style=" height: 30px; width: 30px;" src="/assets/back.png" /> </a>
+</div>
     <div class="item">
         <div class="img-wrap">
-            <img src="@mealPicSrc" alt="..." />
+            <img src="@mealPicSrc" alt="..." /> 
         </div>
     </div>
 
@@ -130,7 +142,7 @@
                 </div>
                 <div class="col">
                     <div class="pb" align="center">
-                        <img src="@sellerPicSrc" alt="@meal.Seller.SellerNavigation.FirstName" style="border-radius:100px;">
+                        <a href="/rating/@meal.SellerId">  <img src="@sellerPicSrc" alt="@meal.Seller.SellerNavigation.FirstName" style="border-radius:100px;"> </a>
                     </div>
                     <div style="margin-bottom: 1rem;" align="center">
                         <p style="color: #FFC700;"><img src="/assets/Star.png" style="height:24px; width:24px;">@rating / 5 </p>
@@ -194,7 +206,6 @@ else
 
 
     private Meal meal;
-    private Meal meal2;
 
     private string rating = "";
     private string[] ingridients = { };

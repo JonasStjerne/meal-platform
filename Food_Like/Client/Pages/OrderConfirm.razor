@@ -7,8 +7,8 @@
 
 
 
-<div class="px-4" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
-    <img src="/assets/back.png" />
+<div class="px-4" style="padding-top: 1.5rem; padding-bottom: 1.5rem; height: 15px; width: 15px;">
+    <a href="/index"> <img src="/assets/back.png" /> </a> 
 </div>
 
 
@@ -24,10 +24,10 @@
     <div class="container px-4">
 
         <div class="row">
-            <div class="col">
-                <img src="@mealPicSrc" alt="..." />
+            <div class="col-3" style="margin-right:20px;">
+                <img src="@mealPicSrc" alt="..." style="height:90px; width:140px;"/>
             </div>
-            <div class="col">
+            <div class="col-9">
 
                 <p>@meal.Titel</p>
 
@@ -144,8 +144,8 @@ else
         using var response = await Http.PostAsJsonAsync("api/meal/" + mealId.ToString(), authRequest);
         if (response.IsSuccessStatusCode)
         {
-            var result = await response.Content.ReadFromJsonAsync<GenericResponse<int>>();
-            NavigationManager.NavigateTo("/orderconfirmation/" + result.Data.ToString());
+            var result = await response.Content.ReadFromJsonAsync<BuyMealResponse>();
+            NavigationManager.NavigateTo("/orderconfirmation/" + result.OrderId.ToString());
         }
         else
         {

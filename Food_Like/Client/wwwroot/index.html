@@ -23,7 +23,8 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
 
-    <script>window.resetCarousel = (id) => {
+    <script>
+        window.resetCarousel = (id) => {
             $(id).carousel(0)
         }
 
@@ -31,7 +32,13 @@
             setTimeout(function () {
                 $(id).carousel('cycle')
             }, 1000);
-        }</script>
+        }
+
+        window.getReferer = () => {
+            return document.referrer;
+        }
+
+    </script>
   
 
 </body>
