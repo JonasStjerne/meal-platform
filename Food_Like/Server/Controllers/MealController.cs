@@ -161,15 +161,15 @@ namespace Food_Like.Server.Controllers
                 List<dynamic> test = new List<dynamic>();
                 foreach (var meal in meals)
                 {
-                    Seller seller = context.Seller.Where(e => e.SellerId == meal.SellerId).First();
-                    Address selleraddress = context.Address.Where(e => e.AddressId == seller.AddressId).First();
+                    Address seller = context.Seller.AsNoTracking().Where(e => e.SellerId == meal.SellerId).Select(e => e.Address).First();
+                    Address selleraddress = context.Address.AsNoTracking().Where(e => e.AddressId == seller.AddressId).First();
                     string response = await client.GetStringAsync(string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?destinations={0}&origins={1}&key=AIzaSyCcdwwvHneJhBnSCxGv1Ik3BOqDWTG0BT0", selleraddress.Line1+selleraddress.Line2+selleraddress.City, location));
                     var reponseDeserialized = JsonConvert.DeserializeObject<dynamic>(response);
                     mealdistance.Add(
                         new Meal {
                             Distance = reponseDeserialized.rows[0].elements[0].distance.text,
                             MealId = meal.MealId,
-                            SellerId = meal.SellerId,
+                            Seller = new Seller { SellerId = meal.SellerId},
                             Titel = meal.Titel,
                             PickupFrom = meal.PickupFrom,
                             PickupTo = meal.PickupTo,
