@@ -20,13 +20,13 @@ namespace Food_Like.Server.Controllers
 
         //Get All userinformation
         [HttpGet]
-        public IActionResult Get([FromHeader] string Authorization)
+        public IActionResult Get([FromHeader] string Auth)
         {
             using (var context = new foodlikeContext())
             {
                 //Standard check for authorized access and make sure is seller
                 var userService = new UserService(context);
-                var authState = userService.GetUser(Authorization);
+                var authState = userService.GetUser(Auth);
 
                 if (authState.FoundUser == false)
                 {
@@ -39,9 +39,8 @@ namespace Food_Like.Server.Controllers
                     {
                    
                             return Ok(context.Buyer
-                                .Where(buyer => buyer.BuyerId == authState.User.BuyerId).AsNoTracking()
-                                .Include(e => e.Mealorder)
-                                .Include(e => e.Seller.Meal)
+                                .Where(buyer => buyer.BuyerId == authState.User.BuyerId)
+                                .Include(e => e.Seller)
                                 .First()
                             );
                     

@@ -23,7 +23,7 @@ namespace Food_Like.Server.Controllers
         {
             using (var context = new foodlikeContext())
             {
-               
+
                 var result = context.Meal
                   .Include(m => m.Seller)
                       .ThenInclude(s => s.SellerNavigation)
@@ -43,7 +43,7 @@ namespace Food_Like.Server.Controllers
                 {
                     return NotFound();
                 }
-                
+
             }
         }
 
@@ -119,7 +119,7 @@ namespace Food_Like.Server.Controllers
                 {
                     return Unauthorized();
                 }
-                    
+
                 var meal = context.Meal.Include(e => e.Mealorder).ToList().Find(meal => meal.MealId == id);
                 if (meal != null)
                 {
@@ -151,20 +151,32 @@ namespace Food_Like.Server.Controllers
         }
 
         //Not ready
-        [HttpGet("search{location}")]
-        public dynamic Search(string location)
+        [HttpGet("search/{location}")]
+        public async Task<List<Meal>> Search(string location)
         {
             using (var context = new foodlikeContext())
             {
-
                 List<Meal> meals = context.Meal.ToList();
-                Dictionary<Meal, int> mealdistance = new Dictionary<Meal, int>();
+                List<Meal> mealdistance = new List<Meal>();
+                List<dynamic> test = new List<dynamic>();
                 foreach (var meal in meals)
                 {
                     Seller seller = context.Seller.Where(e => e.SellerId == meal.SellerId).First();
                     Address selleraddress = context.Address.Where(e => e.AddressId == seller.AddressId).First();
-                    dynamic distancetomeal = client.GetAsync(string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?destinations={0}&origins={1}&key=aizasyccdwwvhnejhbnscxgv1ik3boqdwtg0bt0", selleraddress, location));
-                    mealdistance.Add(meal, distancetomeal.elements[0].distance.value);
+                    string response = await client.GetStringAsync(string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?destinations={0}&origins={1}&key=AIzaSyCcdwwvHneJhBnSCxGv1Ik3BOqDWTG0BT0", selleraddress.Line1+selleraddress.Line2+selleraddress.City, location));
+                    var reponseDeserialized = JsonConvert.DeserializeObject<dynamic>(response);
+                    mealdistance.Add(
+                        new Meal {
+                            Distance = reponseDeserialized.rows[0].elements[0].distance.text,
+                            MealId = meal.MealId,
+                            SellerId = meal.SellerId,
+                            Titel = meal.Titel,
+                            PickupFrom = meal.PickupFrom,
+                            PickupTo = meal.PickupTo,
+                            PortionPrice = meal.PortionPrice
+                        }
+                    );
+                    //test.Add(reponseDeserialized.rows[0].elements[0].distance);
                 }
                 return mealdistance;
                 //return context.Meal.ToList();

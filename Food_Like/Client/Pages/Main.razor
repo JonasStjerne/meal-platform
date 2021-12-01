@@ -13,23 +13,25 @@
     </div>
 </div>
 
-<div>
-   @if (mealReservations == null)
-            {
-                <p>Loading</p>
-            } 
-   else if (mealReservations.Count > 0) {
-        <p class="bold m-0">My Reservations</p>
-        @foreach (var meal in mealReservations) { 
+<div class="mt-4">
+    @if (mealReservations == null)
+    {
+        <p>Loading</p>
+    }
+    else if (mealReservations.Count > 0)
+    {
+        <p class="bold m-1">My Reservations</p>
+        @foreach (var meal in mealReservations)
+        {
             <div class="cardshadow rounded d-flex flex-column mb-3">
                 <div class="w-auto mx-2 d-flex justify-content-between  p-2">
-                    <div>
-                        <img />
-                        <img />
+                    <div class="position-relative">
+                        <img src="assets/TestAssets/image 1.png" />
+                        <img src="assets/bob.png" heigth="25" width="25" class="rounded-circle position-absolute" style="bottom: -12px; left: -12px;" />
                     </div>
                     <p>@meal.Titel</p>
-                    <a href="https://www.mobilepay.dk/erhverv/betalingslink/betalingslink-svar?phone=@meal.Seller.  &amount=20&comment=Foodlike%20Betaling"><button class="btn btn-primary"><p class="bold text-white m-0">Pay</p></button></a>
-                    <img src="assets/callIcon.png" width="25" height="25" alt="Alternate Text" />
+                    <a href="https://www.mobilepay.dk/erhverv/betalingslink/betalingslink-svar?phone=@meal.Seller.SellerNavigation.PhoneNumber&amount=@meal.PortionPrice&comment=Foodlike%20Betaling"><button class="btn btn-primary"><p class="bold text-white m-0">Pay</p></button></a>
+                    <a href="tel:@meal.Seller.SellerNavigation.PhoneNumber"><img src="assets/callIcon.png" width="25" height="25" alt="Alternate Text" /></a>
                 </div>
                 <div class="w-auto mx-2">
                     <table class="w-100 text-center">
@@ -43,7 +45,7 @@
                         <tbody>
                             <tr>
                                 <td><p class="text-primary">@meal.PickupFrom.ToShortDateString() <br /> Kl. @meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm")</p></td>
-                                <td><p class="text-break text-primary">@meal.Seller.Address</p></td>
+                                <td><p class="text-break text-primary">@meal.Seller.Address.Line1 @meal.Seller.Address.Line2, <br /> @meal.Seller.Address.City </p></td>
                                 <td><p class="text-primary">@meal.PortionPrice</p></td>
                             </tr>
                         </tbody>
@@ -51,7 +53,7 @@
                 </div>
             </div>
         }
-   }
+    }
 </div>
 
 <div>
@@ -65,7 +67,7 @@
         @foreach (var meal in myMeals)
         {
             <div class="cardshadow rounded d-flex flex-column mb-3">
-                <div class="w-auto mx-2 d-flex justify-content-between p-2">
+                <div class="w-auto m-2 d-flex justify-content-between">
                     <div>
                         <img src="assets/TestAssets/image 1.png" />
                     </div>
@@ -84,7 +86,7 @@
                         <tbody>
                             <tr>
                                 <td><p class="text-primary">@meal.PickupFrom.ToShortDateString() <br /> Kl. @meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm")</p></td>
-                                <td><p class="text-primary">0</p></td>
+                                <td><p class="text-primary">@meal.Reserved / @meal.Portions</p></td>
                                 <td><p class="text-primary">@meal.PortionPrice</p></td>
                             </tr>
                         </tbody>
@@ -100,8 +102,8 @@
 <div>
     <div class="d-flex justify-content-between">
         <div>
-            <img />
-            <a>Locationdata</a>
+            <img src="assets/locationIcon.png" />
+            <a class="text-primary">Locationdata</a>
         </div>
         <p style="color: var(--highlight)">Today</p>
     </div>
@@ -113,38 +115,51 @@
     </div>
 </div>
 
-<div class="container">
-    <div class="row row-cols-2">
-        <div>
-            <div class="d-flex justify-content-between">
-                <small>19:00-19:20 20/1</small>
-                <small>700m</small>
-            </div>
-            <div style="background-image: url('')">
-                <div class="d-flex justify-content-end w-100">
-                    <div class="card bg-white"><small class="text-center">20 kr</small></div>
+@if (mealsAndDistance != null)
+{
+    <p>Loading</p>
+}
+else
+{
+    <div class="container">
+
+
+            <div class="col-6">
+                <div class="d-flex justify-content-between">
+                    <small>19:00-19:20 20/1</small>
+                    <small></small>
                 </div>
-            </div>
-            <div>
-                <p class="text-break">Spaghetti w/ chicken</p>
-                <div>
-                    <img />
-                    <div>
-                        <img />
-                        <p style="color: yellow;">4,6</p>
+                <div style="background-image: url('assets/TestAssets/image 1.png'); height: 50px; background-repeat: no-repeat; background-size: cover;">
+                    <div class="d-flex justify-content-end w-100">
+                        <div class="card bg-white"><small class="text-center">20 kr</small></div>
+                    </div>
+                </div>
+                <div class="d-flex flex-row align-items-end">
+                    <p class=" m-0 text-break">Spaghetti w/ chicken</p>
+                    <div class="position-relative">
+                        <img src="assets/bob.png" heigth="40" width="40" class="rounded-circle position-absolute" style="top: -40px; right: 0;" />
+                        <div class="d-flex flex-row align-items-end">
+                            <img height="20" width="20" src="assets/Star.png" />
+                            <p class="m-0" style="color: #FFC700;">4,6</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        
     </div>
-</div>
+}
 
 
 
 @code {
-
+    private string location = "Stjernepladsen 19 Aalborg";
     private List<Meal> myMeals;
     private List<Meal> mealReservations { get; set; }
+    private Buyer user;
+    private bool userIsSeller { get; set; }
+    private List<Meal> mealsAndDistance;
+
+    private Dictionary<Meal, int> browseMeals;
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,10 +179,36 @@
 
         var response2 = await Http.SendAsync(requestMyReservations);
         mealReservations = await response2.Content.ReadFromJsonAsync<List<Meal>>();
-        Console.WriteLine(myMeals.Count);
+
+
+        //Get profile
+
+        var requestUser = new HttpRequestMessage(HttpMethod.Get, "api/user");
+        requestUser.Headers.Add("Auth", token);
+
+        var userResponse = await Http.SendAsync(requestUser);
+        user = await userResponse.Content.ReadFromJsonAsync<Buyer>();
+        if (user.Seller != null)
+        {
+            userIsSeller = true;
+        }
+        else
+        {
+            userIsSeller = false;
+        }
+
+        //Get meals by location
+
+        //var reponse3 = await Http.GetAsync("/api/meal/search/" + location);
+
+        //mealsAndDistance = await reponse3.Content.ReadFromJsonAsync<Dictionary<Meal, dynamic>>();
+
+        var mealsAndDistance = await Http.GetFromJsonAsync<List<Meal>>("/api/meal/search/" + location);
+        Console.WriteLine(mealsAndDistance.Count);
+        Console.WriteLine();
     }
     private bool isSeller()
     {
-        return false;
+        return userIsSeller;
     }
 }
