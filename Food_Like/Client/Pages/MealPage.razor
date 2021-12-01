@@ -1,5 +1,5 @@
 ﻿@page "/meal/{mealId:int}"
-@layout OuterLayout
+@layout MealLayout
 @inject NavigationManager NavigationManager
 @using System.IO;
 @using Food_Like.Shared;
@@ -20,80 +20,170 @@
             width: 100%;
             position: absolute;
         }
+
+    .item {
+        margin: 0px;
+        padding: 0px;
+        position: relative;
+        width: 100%;
+        height: 234px;
+        overflow: hidden;
+    }
+
+        .item .img-wrap:before {
+            content: '';
+            background-image: linear-gradient(to top, rgba(239,239,239,255), rgba(239,239,239,0));
+            position: absolute;
+            height: 100px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .item .img-wrap:after {
+            content: '';
+            display: block;
+            height: 9999px;
+        }
+
+    .img-wrap img {
+        width: 100%;
+        height: 234px;
+        vertical-align: top;
+        border: 0;
+        box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.2);
+        -ms-interpolation-mode: bicubic;
+    }
+
+    .price {
+        height: 28px;
+        width: 59px;
+        background-color: #fff;
+        border-radius: 2px;
+        text-align: center;
+        position: absolute;
+        right: 20px;
+        top: 19px;
+    }
+
+    .content {
+        position: absolute;
+        padding-top: unset;
+        top: 200px;
+    }
+
+
+
+    .ingridients {
+        background-color: #EAEAEA;
+        text-align: center;
+    }
 </style>
+
+@if (errorMessage.Length > 0)
+{
+    <div class="alert alert-danger d-flex justify-content-center" role="alert">
+        <p>@errorMessage</p>
+    </div>
+}
+
 
 @if (meal != null)
 {
+    <div class="item">
+        <div class="img-wrap">
+            <img src="@mealPicSrc" alt="..." />
+        </div>
+    </div>
 
-    <div>
+    <div class="price cardshadow">
         <p> @meal.PortionPrice kr</p>
     </div>
 
 
 
-    <img src="@mealPicSrc" alt="..." />
 
-    <div>
-        <p> @meal.Reserved / @meal.Portions reserved</p>
-        <h1> @meal.Titel </h1>
-        <p> Pickup at @meal.PickupFrom.ToString("HH:mm") - @meal.PickupTo.ToString("HH:mm , dd/MM")</p>
-        <p> @meal.MealDescription</p>
+    <div class="content ">
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div>
+                        <p style="margin: unset;"> @meal.Reserved / @meal.Portions reserved</p>
+                        <h2 style="margin: unset;"> @meal.Titel </h2>
+                        <p> Pickup at @meal.PickupFrom.ToString("HH:mm") - @meal.PickupTo.ToString("HH:mm , dd/MM")</p>
+                        <p> @meal.MealDescription</p>
+                    </div>
+                    <div>
+                        <p> Pickup around this location </p>
+
+                        <!--Google map-->
+                        <div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 120px; width:176px; border-radius: 2px;">
+                            <iframe src="https://maps.google.com/maps?q=@(meal.Seller.Address.Line1),@(meal.Seller.Address.City)&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
+                                    style="border:0" allowfullscreen></iframe>
+                        </div>
+
+                        <!--Google Maps-->
+                    </div>
+
+                </div>
+                <div class="col">
+                    <div class="pb" align="center">
+                        <img src="@sellerPicSrc" alt="@meal.Seller.SellerNavigation.FirstName" style="border-radius:100px;">
+                    </div>
+                    <div style="margin-bottom: 1rem;" align="center">
+                        <p style="color: #FFC700;"><img src="/assets/Star.png" style="height:24px; width:24px;">@rating / 5 </p>
+                    </div>
+
+
+                    <div class="ingridients cardshadow">
+                        <h3> Ingridients</h3>
+                        <ul style="list-style-type: none; margin: 0; padding: 0; ">
+                            @foreach (string item in ingridients)
+                            {
+                                <li>@item</li>
+                            }
+
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="fixed-bottom px-4" style="padding-bottom:1.5rem;">
+        <div class="row">
+            <div class="col">
+
+
+                <h1>
+                    <img src="/assets/minusbutton.png" @onclick="DecreasePortions" />
+
+                    @portions
+
+
+                    <img src="/assets/plusbutton.png" @onclick="IncreasePortions" />
+                </h1>
+
+            </div>
+            <div class="col" align="center">
+                <button style="height:56px; width:190px;" type="button" class="btn btn-primary" @onclick="Checkout"> To checkout </button>
+            </div>
+        </div>
 
     </div>
 
 
-    <div>
-        <p> @meal.Seller.Address.Line1</p>
-        <img>
-    </div>
-
-    <!--Google map-->
-    <div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 500px">
-        <iframe src="https://maps.google.com/maps?q=@(meal.Seller.Address.Line1),@(meal.Seller.Address.City)&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0"
-                style="border:0" allowfullscreen></iframe>
-    </div>
-
-    <!--Google Maps-->
-
-    <div>
-        <img src="@sellerPicSrc" alt="@meal.Seller.SellerNavigation.FirstName" class="d-block">
-        <p>@meal.Seller.SellerNavigation.FirstName</p>
-        <p>@rating</p>
-    </div>
-
-    <div>
-        <h3> Ingridients</h3>
-        <ul>
-            @foreach (string item in ingridients)
-            {
-                <li>@item</li>
-            }
-
-        </ul>
-    </div>
-
-
-
-
-
-
-    <div>
-
-        <button type="button" class="btn btn-secondary" @onclick="DecreasePortions"> - </button>
-
-        <span> @portions </span>
-
-        <button type="button" class="btn btn-primary" @onclick="IncreasePortions"> + </button>
-
-        <button type="button" class="btn btn-primary" @onclick="Checkout"> To checkout </button>
-
-    </div>
 
 }
 else
-            {
-                <div>Loading data ...</div>
-            }
+{
+    <div>Loading data ...</div>
+}
 
 
 
@@ -104,13 +194,18 @@ else
 
 
     private Meal meal;
+    private Meal meal2;
+
     private string rating = "";
-    private string[] ingridients;
+    private string[] ingridients = { };
     private int portions = 1;
 
 
     private string mealPicSrc;
     private string sellerPicSrc;
+
+    private String errorMessage = "";
+
 
 
     private void Checkout()
@@ -137,93 +232,36 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        meal = createTestMeal(mealId);
-        await loadTestImages();
 
-        // meal = HentFraServer(mealId);
-
-
-        var base64 = Convert.ToBase64String(meal.MealPicture);
-        mealPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
-
-        base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
-        sellerPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
-
-
-        if (meal.Seller.Rating == -1)
+        var response = await Http.GetAsync("api/meal/" + mealId.ToString() );
+        if (response.IsSuccessStatusCode)
         {
-            rating = "No ratings";
+            meal = await response.Content.ReadFromJsonAsync<Meal>();
+            var base64 = Convert.ToBase64String(meal.MealPicture);
+            mealPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
+
+            base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
+            sellerPicSrc = String.Format("data:image/jpg;base64,{0}", base64);
+
+            ingridients = meal.Ingridients.Split(',');
+
+            if (meal.Seller.Rating == -1)
+            {
+                rating = "No ratings";
+            }
+            else
+            {
+                rating = meal.Seller.Rating.ToString("#.#");
+            }
+
+
         }
         else
         {
-            rating = meal.Seller.Rating.ToString("#.#");
+            errorMessage = "Error retrieving meal";
+            StateHasChanged();
         }
-    }
 
-    private async Task loadTestImages()
-    {
-        meal.MealPicture = await Http.GetByteArrayAsync("/assets/Spaghettichicken.png");
-        meal.Seller.SellerNavigation.ProfilePicture = await Http.GetByteArrayAsync("/assets/Hanne.png");
-    }
-
-    //
-    // For local test
-    //
-    private Meal createTestMeal(int id)
-    {
-        var meal = new Meal();
-        meal.MealId = id;
-        meal.PortionPrice = 20;
-        meal.Portions = 5;
-        meal.Titel = "Spagetti w/chicken";
-        meal.PickupFrom = new DateTime(2021, 1, 20, 19, 0, 0);
-        meal.PickupTo = new DateTime(2021, 1, 20, 19, 20, 0);
-        meal.MealDescription = "I’ll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.";
-
-
-        meal.Ingridients = "Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto";
-        ingridients = meal.Ingridients.Split(',');
-
-        var buyer = new Buyer();
-        buyer.FirstName = "Hanne";
-
-        Address address = new Address();
-        address.Line1 = "Boulevarden 14";
-        address.City = "Aalborg";
-
-        Seller seller = new Seller();
-        seller.SellerNavigation = buyer;
-        seller.Address = address;
-
-        seller.Meal = new List<Meal>();
-        seller.Meal.Add(meal);
-
-        meal.Seller = seller;
-
-        meal.Review = new List<Review>();
-        Review review1 = new Review();
-        review1.Rating = 3;
-        review1.Meal = meal;
-
-        Review review2 = new Review();
-        review2.Rating = 4;
-        review2.Meal = meal;
-
-        meal.Review.Add(review1);
-        meal.Review.Add(review2);
-
-        meal.Mealorder = new List<Mealorder>();
-
-        Mealorder order1 = new Mealorder();
-        order1.Quantity = 1;
-
-        Mealorder order2 = new Mealorder();
-        order2.Quantity = 1;
-
-        meal.Mealorder.Add(order1);
-        meal.Mealorder.Add(order2);
-
-        return meal;
     }
 
 }

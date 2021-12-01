@@ -1,0 +1,49 @@
+﻿@page "/rating/{sellerId:int}"
+@layout BlankLayout
+@inject HttpClient Http
+@using Food_Like.Shared;
+
+
+
+<style>
+
+    .ppimg {
+    }
+</style>
+
+
+<div class="kitchenimg">
+    <img src="/assets/kitchen.png" />
+</div>
+
+<div class="ppimg" align="center">
+    <img style="border-radius:100%;" src="/assets/Hanne.png" />
+</div>
+
+
+
+@code {
+
+    [Parameter]
+    public int sellerId { get; set; }
+
+    private Seller seller;
+    private List<Review> reviews;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        var response = await Http.GetAsync("api/seller/review");
+        if (response.IsSuccessStatusCode)
+        {
+            reviews = await response.Content.ReadFromJsonAsync<List<Review>>();
+
+        }
+        else
+        {
+        }
+        StateHasChanged();
+    }
+
+}

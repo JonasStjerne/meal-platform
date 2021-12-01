@@ -23,8 +23,19 @@ namespace Food_Like.Server.Controllers
         {
             using (var context = new foodlikeContext())
             {
-                
-                var result = context.Meal.ToList().Find(meal => meal.MealId == id);
+               
+                var result = context.Meal
+                  .Include(m => m.Seller)
+                      .ThenInclude(s => s.SellerNavigation)
+                  .Include(m => m.Seller)
+                      .ThenInclude(s => s.Address)
+                  .Include(s => s.Mealorder)
+                  .Include(m => m.Review)
+                  .Include(m => m.Mealcategory)
+                      .ThenInclude(c => c.Category)
+                  .First(m => m.MealId == id);
+
+
                 if (result != null)
                 {
                     return Ok(result);
@@ -114,15 +125,20 @@ namespace Food_Like.Server.Controllers
                 {
                     if (meal.Portions - meal.Mealorder.Count(e => e.MealId == id) >= auth.Request)
                     {
-                        context.Mealorder.Add(
-                        new Mealorder
+                        Mealorder order = new Mealorder
                         {
                             BuyerId = authState.User.BuyerId,
                             MealId = meal.MealId,
                             Quantity = auth.Request
-                        });
+                        };
+                        context.Mealorder.Add(order);
                         context.SaveChanges();
-                        return Ok();
+                        var response = new GenericResponse<int>
+                        {
+                            Sucess = true,
+                            Data = order.OrderId
+                        };
+                        return Ok(response);
                     }
                     return BadRequest();
                 }
