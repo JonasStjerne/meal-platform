@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Food_Like.Server.Controllers
 {
@@ -16,12 +17,45 @@ namespace Food_Like.Server.Controllers
     public class UserController : ControllerBase
     {
 
+
+        //Get All userinformation
         [HttpGet]
-        public IEnumerable<Buyer> Get()
+        public IActionResult Get([FromHeader] string Authorization)
         {
             using (var context = new foodlikeContext())
             {
-                return context.Buyer.ToList();
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(Authorization);
+
+                if (authState.FoundUser == false)
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    if (userService.UserIsSeller(authState))
+                    {
+                   
+                            return Ok(context.Buyer
+                                .Where(buyer => buyer.BuyerId == authState.User.BuyerId).AsNoTracking()
+                                .Include(e => e.Mealorder)
+                                .Include(e => e.Seller.Meal)
+                                .First()
+                            );
+                    
+                    } else
+                    {
+                    
+                            return Ok(context.Buyer.Where(buyer => buyer.BuyerId == authState.User.BuyerId).First());
+                
+                    }
+                } catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
             }
         }
 
@@ -98,16 +132,13 @@ namespace Food_Like.Server.Controllers
         }
 
         [HttpGet("mymeals")]
-        public async Task<ActionResult<List<Meal>>> GetMyMeals([FromHeader] string Authorization)
+        public async Task<ActionResult<List<Meal>>> GetMyMeals([FromHeader] string Auth)
         {
             using (var context = new foodlikeContext())
             {
-
-
-
                 //Standard check for authorized access and make sure is seller
                 var userService = new UserService(context);
-                var authState = userService.GetUser(Authorization);
+                var authState = userService.GetUser(Auth);
 
                 if (authState.FoundUser == false || !userService.UserIsSeller(authState))
                 {
@@ -116,8 +147,13 @@ namespace Food_Like.Server.Controllers
 
                 try
                 {
-                    var response = context.Meal
-                        .Where(e => e.SellerId == authState.User.BuyerId).ToList();
+                    
+                    var response = context.Seller
+                        .Include(e => e.Meal).Ig
+                        .Where(e => e.SellerId == authState.User.BuyerId)
+                        .ToList();
+                    
+
                     if (response == null)
                     {
                         return NotFound();
