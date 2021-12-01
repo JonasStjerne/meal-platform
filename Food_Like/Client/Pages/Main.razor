@@ -14,21 +14,21 @@
 </div>
 
 <div>
-   @if (myMeals == null)
+   @if (mealReservations == null)
             {
                 <p>Loading</p>
             } 
-   else {
-        <p class="bold">My Reservations</p>
-        @foreach (var meal in myMeals) { 
-            <div class="cardshadow rounded d-flex flex-column">
+   else if (mealReservations.Count > 0) {
+        <p class="bold m-0">My Reservations</p>
+        @foreach (var meal in mealReservations) { 
+            <div class="cardshadow rounded d-flex flex-column mb-3">
                 <div class="w-auto mx-2 d-flex justify-content-between  p-2">
                     <div>
                         <img />
                         <img />
                     </div>
                     <p>@meal.Titel</p>
-                    <button class="btn btn-primary"><p class="bold text-white m-0">Pay</p></button>
+                    <a href="https://www.mobilepay.dk/erhverv/betalingslink/betalingslink-svar?phone=@meal.Seller.  &amount=20&comment=Foodlike%20Betaling"><button class="btn btn-primary"><p class="bold text-white m-0">Pay</p></button></a>
                     <img src="assets/callIcon.png" width="25" height="25" alt="Alternate Text" />
                 </div>
                 <div class="w-auto mx-2">
@@ -43,7 +43,7 @@
                         <tbody>
                             <tr>
                                 <td><p class="text-primary">@meal.PickupFrom.ToShortDateString() <br /> Kl. @meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm")</p></td>
-                                <td><p class="text-break text-primary">myMeals[i].Seller.Address</p></td>
+                                <td><p class="text-break text-primary">@meal.Seller.Address</p></td>
                                 <td><p class="text-primary">@meal.PortionPrice</p></td>
                             </tr>
                         </tbody>
@@ -55,34 +55,44 @@
 </div>
 
 <div>
-    <p class="bold m-1">Meal for sale</p>
-    <div class="cardshadow rounded d-flex flex-column">
-        <div class="w-auto mx-2 d-flex justify-content-between p-2">
-            <div>
-                <img src="assets/TestAssets/image 1.png"/>
+    @if (myMeals == null)
+    {
+        <p>Loading</p>
+    }
+    else if (myMeals.Count > 0)
+    {
+        <p class="bold m-1">Meal for sale</p>
+        @foreach (var meal in myMeals)
+        {
+            <div class="cardshadow rounded d-flex flex-column mb-3">
+                <div class="w-auto mx-2 d-flex justify-content-between p-2">
+                    <div>
+                        <img src="assets/TestAssets/image 1.png" />
+                    </div>
+                    <p>@meal.Titel</p>
+                    <button class="btn btn-primary"><p class="bold text-white m-0">Orders</p></button>
+                </div>
+                <div class="w-auto mx-2">
+                    <table class="w-100 text-center">
+                        <thead>
+                            <tr>
+                                <td>Pickup at</td>
+                                <td>Sold</td>
+                                <td>Price</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><p class="text-primary">@meal.PickupFrom.ToShortDateString() <br /> Kl. @meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm")</p></td>
+                                <td><p class="text-primary">0</p></td>
+                                <td><p class="text-primary">@meal.PortionPrice</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <p>Titel</p>
-            <button class="btn btn-primary"><p class="bold text-white m-0">Orders</p></button>
-        </div>
-        <div class="w-auto mx-2">
-            <table class="w-100 text-center">
-                <thead>
-                    <tr>
-                        <td>Pickup at</td>
-                        <td>Sold</td>
-                        <td>Price</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>PickupFrom - PickupTo</td>
-                        <td>Address</td>
-                        <td>PortionPrice</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+        }
+    }
 </div>
 
 
@@ -133,18 +143,28 @@
 
 @code {
 
-    private Meal[] myMeals;
+    private List<Meal> myMeals;
     private List<Meal> mealReservations { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var token = await localStore.GetItemAsync<string>("credentials");
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "api/user/mymeals");
-        request.Headers.Add("Auth", token);
-        
-        var response = await Http.SendAsync(request);
-        myMeals = await response.Content.ReadFromJsonAsync<Meal[]>();
+        //Get my meals
+        var requestMyMeals = new HttpRequestMessage(HttpMethod.Get, "api/user/mymeals");
+        requestMyMeals.Headers.Add("Auth", token);
+
+        var response = await Http.SendAsync(requestMyMeals);
+        myMeals = await response.Content.ReadFromJsonAsync<List<Meal>>();
+
+        //Get my reservations
+
+        var requestMyReservations = new HttpRequestMessage(HttpMethod.Get, "api/user/myreservations");
+        requestMyReservations.Headers.Add("Auth", token);
+
+        var response2 = await Http.SendAsync(requestMyReservations);
+        mealReservations = await response2.Content.ReadFromJsonAsync<List<Meal>>();
+        Console.WriteLine(myMeals.Count);
     }
     private bool isSeller()
     {

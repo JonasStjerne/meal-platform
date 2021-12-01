@@ -165,17 +165,84 @@ namespace Food_Like.Server.Controllers
 
                 try
                 {
-                    
-                    var response = context.Seller
-                        .Include(e => e.Meal)
+                    //Map relevant data to hide sensitive information
+                    var response = context.Meal
                         .Where(e => e.SellerId == authState.User.BuyerId)
+                        .Select(e => new Meal 
+                        {
+                            Titel = e.Titel,
+                            Portions = e.Portions,
+                            PortionPrice = e.PortionPrice,
+                            PickupFrom = e.PickupFrom,
+                            PickupTo = e.PickupTo,
+                            MealPicture = e.MealPicture,
+                            Seller = new Seller
+                            {
+                                Address = e.Seller.Address
+                            }
+                        })
                         .ToList();
-                    
 
                     if (response == null)
                     {
                         return NotFound();
                     } else
+                    {
+                        return Ok(response);
+                    }
+                }
+                catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
+            }
+        }
+
+        [HttpGet("myreservations")]
+        public async Task<ActionResult<List<Meal>>> GetMyReservations([FromHeader] string Auth)
+        {
+            using (var context = new foodlikeContext())
+            {
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(Auth);
+
+                if (authState.FoundUser == false || !userService.UserIsSeller(authState))
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    //Map relevant data to hide sensitive information
+                    var response = context.Mealorder
+                        .Include(e => e.Meal)
+                        .Where(e => e.BuyerId == authState.User.BuyerId)
+                        .Select(e => new Meal
+                        {
+                            Titel = e.Meal.Titel,
+                            Portions = e.Meal.Portions,
+                            PortionPrice = e.Meal.PortionPrice,
+                            PickupFrom = e.Meal.PickupFrom,
+                            PickupTo = e.Meal.PickupTo,
+                            MealPicture = e.Meal.MealPicture,
+                            Seller = new Seller
+                            {
+                                Address = e.Meal.Seller.Address,
+                                SellerNavigation = new Buyer
+                                {
+                                    PhoneNumber = e.Meal.Seller.SellerNavigation.PhoneNumber
+                                }
+                            }
+                        })
+                        .ToList();
+
+                    if (response == null)
+                    {
+                        return NotFound();
+                    }
+                    else
                     {
                         return Ok(response);
                     }
