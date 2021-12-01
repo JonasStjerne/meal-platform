@@ -32,11 +32,12 @@
 </style>
 
 <div class="createpicture">
-    <input type="file" @ref="inputTypeFileElement" @onchange="HandleUpload" />
-    @if (profilePictureSrc != null)
-    {
-        <img src="@profilePictureSrc" class="profilepicture" alt="Profile Picture">
-    }
+    <input type="file" id="file-upload" style="display: none" @ref="inputTypeFileElement" @onchange="HandleUpload" />
+    <label for="file-upload" style="cursor: pointer">
+        @if (profilePictureSrc != null)
+        {
+    <img src="@profilePictureSrc" class="profilepicture" alt="Profile Picture">}
+    </label>
 </div>
 
 

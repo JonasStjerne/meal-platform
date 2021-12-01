@@ -113,6 +113,24 @@ namespace Food_Like.Server.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Seller>> GetSeller(int id)
+        {
+            using (var context = new foodlikeContext())
+            {
+                try
+                {
+                    return context.Seller
+                        .Where(s => s.SellerId == id).Include(s => s.Address).Include(s => s.SellerNavigation).First();
+                }
+                catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
+            }
+        }
+
         [HttpGet("{id}/ratings")]
         public async Task<ActionResult<List<Review>>> GetRatings(int id)
         {
@@ -121,7 +139,7 @@ namespace Food_Like.Server.Controllers
                 try
                 {
                     return context.Review
-                        .Where(e => e.Meal.SellerId == id).ToList();
+                        .Where(e => e.Meal.SellerId == id).Include(r => r.Buyer).ToList();
                 }
                 catch (Exception exp)
                 {

@@ -110,7 +110,7 @@
 
 
     <!-- Inner -->
-    <div class="carousel-inner py-4">
+    <div class="carousel-inner" style="padding-top:60px; padding-bottom:40px;" >
         <!-- Single item -->
 
         @{
@@ -127,7 +127,7 @@
                         @for (var col = 0; col < 3; col++)
                         {
                             MealCard m = cards[row * 3 + col];
-                            <div class="col-lg-4">
+                            <div class="col-lg-4" style="height:160px;">
 
                                 <img src="@m.image"
                                      class="card-img-top"
