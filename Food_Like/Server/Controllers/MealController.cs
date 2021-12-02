@@ -156,7 +156,7 @@ namespace Food_Like.Server.Controllers
         {
             using (var context = new foodlikeContext())
             {
-                List<Meal> meals = context.Meal.ToList();
+                List<Meal> meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30)).ToList();
                 List<Meal> mealdistance = new List<Meal>();
                 List<dynamic> test = new List<dynamic>();
                 foreach (var meal in meals)
