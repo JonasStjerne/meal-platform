@@ -3,6 +3,8 @@
 @inject NavigationManager NavManager
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService localStore
+@using Tewr.Blazor.FileReader
+@inject IFileReaderService FileReaderService;
 
 
 <style>
@@ -22,16 +24,46 @@
             font-size: 16px;
         }
 
-        .form-signin .form-control:focus {
-            z-index: 2;
-        }
+            .form-signin .form-control:focus {
+                z-index: 2;
+            }
 
         .form-signin input {
             margin-bottom: 10px;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+
+    .createpicture {
+        height: 118px;
+        width: 118px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .profilepicture {
+        height: 118px;
+        width: 118px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 100%;
+    }
 </style>
+
+
+
+
+<div class="createpicture">
+    <input type="file" id="file-upload" style="display: none" @ref="inputTypeFileElement" @onchange="HandleUpload" />
+    <label for="file-upload" style="cursor: pointer">
+        @if (mealPictureSrc != null)
+        {
+            <img src="@mealPictureSrc" class="profilepicture" alt="Profile Picture">}
+    </label>
+</div>
+
+
+
 <form class="form-signin">
     <input type="text" class="form-control mb-2" placeholder="Titel" @bind="titel" required autofocus>
 
@@ -71,6 +103,8 @@
 
 
 @code {
+
+    private ElementReference inputTypeFileElement;
     const string credentials = "credentials";
     private string token { get; set; }
 
@@ -82,11 +116,39 @@
     private string ingridients { get; set; }
     private DateTime pickupFrom = DateTime.Now;
     private DateTime pickupTo = DateTime.Now.AddMinutes(30);
-    private byte[] mealPicture { get; set; }
+    private byte[] mealPicture { get; set; } = new byte[] { };
 
 
+    private string mealPictureSrc = null;
 
     private string errorMessage = "";
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        var defaultImg = await Http.GetByteArrayAsync("/assets/selectpic.png");
+        var base64 = Convert.ToBase64String(defaultImg);
+        mealPictureSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+
+    private async Task HandleUpload()
+    {
+        foreach (var file in await FileReaderService.CreateReference(inputTypeFileElement).EnumerateFilesAsync())
+        {
+            if (file != null)
+            {
+                var fileInfo = await file.ReadFileInfoAsync();
+                using (var ms = await file.CreateMemoryStreamAsync(4 * 1024))
+                {
+                    mealPicture = new byte[fileInfo.Size];
+                    mealPicture = ms.ToArray();
+                    var base64 = Convert.ToBase64String(mealPicture);
+                    mealPictureSrc = String.Format("data:image/jpg;base64,{0}", base64);
+                }
+            }
+        }
+    }
+
 
     protected async override void OnInitialized()
     {
@@ -105,7 +167,7 @@
             Ingridients = ingridients,
             PickupFrom = pickupFrom,
             PickupTo = pickupTo,
-            MealPicture = new byte[0]
+            MealPicture = mealPicture
         };
 
         Auth<CreateMealRequest> authRequest = new Auth<CreateMealRequest>(token)
