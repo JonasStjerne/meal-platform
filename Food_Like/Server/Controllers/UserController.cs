@@ -175,6 +175,7 @@ namespace Food_Like.Server.Controllers
                             PickupFrom = e.PickupFrom,
                             PickupTo = e.PickupTo,
                             MealPicture = e.MealPicture,
+                            Mealorder = e.Mealorder,
                             Seller = new Seller
                             {
                                 Address = e.Seller.Address
@@ -232,7 +233,8 @@ namespace Food_Like.Server.Controllers
                                 SellerNavigation = new Buyer
                                 {
                                     BuyerId = e.Meal.Seller.SellerNavigation.BuyerId,
-                                    PhoneNumber = e.Meal.Seller.SellerNavigation.PhoneNumber
+                                    PhoneNumber = e.Meal.Seller.SellerNavigation.PhoneNumber,
+                                    ProfilePicture = e.Meal.Seller.SellerNavigation.ProfilePicture
                                 }
                             }
                         })

@@ -161,7 +161,7 @@ namespace Food_Like.Server.Controllers
                 List<dynamic> test = new List<dynamic>();
                 foreach (var meal in meals)
                 {
-                    Address seller = context.Seller.AsNoTracking().Where(e => e.SellerId == meal.SellerId).Select(e => e.Address).First();
+                    Seller seller = context.Seller.AsNoTracking().Include(e => e.SellerNavigation).Where(e => e.SellerId == meal.SellerId).First();
                     Address selleraddress = context.Address.AsNoTracking().Where(e => e.AddressId == seller.AddressId).First();
                     string response = await client.GetStringAsync(string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?destinations={0}&origins={1}&key=AIzaSyCcdwwvHneJhBnSCxGv1Ik3BOqDWTG0BT0", selleraddress.Line1+selleraddress.Line2+selleraddress.City, location));
                     var reponseDeserialized = JsonConvert.DeserializeObject<dynamic>(response);
@@ -169,17 +169,22 @@ namespace Food_Like.Server.Controllers
                         new Meal {
                             Distance = reponseDeserialized.rows[0].elements[0].distance.text,
                             MealId = meal.MealId,
-                            Seller = new Seller { SellerId = meal.SellerId},
+                            Seller = new Seller 
+                            { 
+                                SellerId = meal.SellerId,
+                                SellerNavigation = new Buyer
+                                {
+                                    ProfilePicture = seller.SellerNavigation.ProfilePicture
+                                }
+                            },
                             Titel = meal.Titel,
                             PickupFrom = meal.PickupFrom,
                             PickupTo = meal.PickupTo,
-                            PortionPrice = meal.PortionPrice
+                            PortionPrice = meal.PortionPrice,
                         }
                     );
-                    //test.Add(reponseDeserialized.rows[0].elements[0].distance);
                 }
                 return mealdistance;
-                //return context.Meal.ToList();
             }
         }
 
