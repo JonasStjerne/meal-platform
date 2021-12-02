@@ -29,15 +29,18 @@ namespace Food_Like.Server.Controllers
                       .ThenInclude(s => s.SellerNavigation)
                   .Include(m => m.Seller)
                       .ThenInclude(s => s.Address)
-                  .Include(s => s.Mealorder)
-                  .Include(m => m.Review)
-                  .Include(m => m.Mealcategory)
-                      .ThenInclude(c => c.Category)
                   .First(m => m.MealId == id);
 
 
                 if (result != null)
                 {
+                    // select avg(rating) from reviews where mealId in (select mealId from meal where sellerID = meal.sellerId)
+                    var rating = context.Review.Join(context.Meal, review => review.MealId, meal => meal.MealId, (review, meal) => new { ReviewId = review.ReviewId, Rating = review.Rating, MealId = meal.MealId, SellerId = meal.SellerId }).Where(r => r.SellerId == result.SellerId).Average(r => r.Rating);
+                    result.Seller.Rating = (decimal)rating;
+
+                    var reserved = context.Mealorder.Where(m => m.MealId == result.MealId).Sum(m => m.MealId);
+                    result.Reserved = reserved;
+
                     return Ok(result);
                 } else
                 {
@@ -203,7 +206,34 @@ namespace Food_Like.Server.Controllers
         {
             using (var context = new foodlikeContext())
             {
-                return context.Meal.ToList().OrderBy(e => e.Rating).Take(12);
+                //
+                //select meal.*
+                //from review
+                //inner join meal on review.mealId = meal.mealId
+                //group by review.mealId
+                //order by avg(rating) desc;
+
+                /*
+var mealIds = context.Review.GroupBy(r => r.MealId).OrderByDescending(r => )
+
+var result = context.Review.Join(context.Meal,
+    review => review.MealId,
+    meal => meal.MealId,
+    (review, meal) => new { MealId = meal.MealId })
+    .Where(r => r.SellerId == result.SellerId)
+    .Average(r => r.Rating);
+
+var result = context.Review.Join(Meal)
+*/
+
+                //return context.Meal.ToList().OrderBy(e => e.Titel).Take(12);
+                //return context.Meal.ToList().OrderBy(e => e.Rating).Take(12);
+
+                //var ids = context.Review.GroupBy(r => r.MealId).OrderByDescending(g => g.Average(x => x.Rating)).Select(g => g.Key).ToArray();
+                //Console.WriteLine(ids + "; " + ids.Length + "; " + ids[0]);
+                //return context.Meal.Where(m => ids.Contains(m.MealId)).ToList().Take(12);
+                return context.Meal.ToList().OrderBy(e => e.Titel).Take(12); ;
+
             }
         }
 
