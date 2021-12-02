@@ -1,0 +1,79 @@
+﻿@page "/orders"
+@layout MainPageLayout
+@inject HttpClient Http
+@using Food_Like.Shared;
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+
+<style>
+    .back {
+        position: absolute;
+        left: 20px;
+        top: 19px;
+        z-index: 10;
+    }
+</style>
+<div class="back">
+    <a href="/myprofile"> <img style=" height: 30px; width: 30px;" src="/assets/back.png" /> </a>
+</div>
+<h2 class="text-center">Orders</h2>
+
+@if (mealReservations == null)
+{
+    <p>Loading</p>
+}
+else
+{
+    @foreach (var meal in mealReservations)
+    {
+        var base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
+        var picture = String.Format("data:image/jpg;base64,{0}", base64);
+        var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
+        var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
+        <div class="cardshadow rounded d-flex flex-column mb-3">
+            <div class="w-auto mx-2 d-flex justify-content-between p-2" style="gap: 10px;">
+                <div class="position-relative" style="width: 200px; height: 100px; background-image: url('@mealPicture'); background-repeat: no-repeat; background-size: cover; background-position: center;">
+                </div>
+                <p class="text-center">@meal.Titel</p>
+                <a class="text-decoration-none" href="/rate/@meal.MealId">
+                    <button style="height: 30px;" class="btn btn-primary mr-1"><p class="bold text-white m-0">Rate</p></button>
+                </a>
+            </div>
+            <div class="w-auto mx-2">
+                <table class="w-100 text-center">
+                    <thead>
+                        <tr>
+                            <td>Picked up at</td>
+                            <td>Adress</td>
+                            <td>Price</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><p class="text-primary">@meal.PickupFrom.ToShortDateString() <br /> Kl. @meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm")</p></td>
+                            <td><p class="text-break text-primary">@meal.Seller.Address.Line1 @meal.Seller.Address.Line2, <br /> @meal.Seller.Address.City </p></td>
+                            <td><p class="text-primary">@meal.PortionPrice</p></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}
+
+
+@code {
+    private List<Meal> mealReservations { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        var token = await localStore.GetItemAsync<string>("credentials");
+        var requestMyReservations = new HttpRequestMessage(HttpMethod.Get, "api/user/mypastorders");
+        requestMyReservations.Headers.Add("Auth", token);
+
+        var response2 = await Http.SendAsync(requestMyReservations);
+        mealReservations = await response2.Content.ReadFromJsonAsync<List<Meal>>();
+
+    }
+
+}

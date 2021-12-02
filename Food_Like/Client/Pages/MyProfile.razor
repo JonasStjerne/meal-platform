@@ -1,0 +1,67 @@
+﻿@page "/myprofile"
+@layout MainPageLayout
+@inject HttpClient Http
+@using Food_Like.Shared;
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject NavigationManager NavigationManager
+
+<style>
+    .back {
+        position: absolute;
+        left: 20px;
+        top: 19px;
+        z-index: 10;
+    }
+</style>
+<div class="back">
+    <a href="/home"> <img style=" height: 30px; width: 30px;" src="/assets/back.png" /> </a>
+</div>
+<h2 class="text-center">Settings</h2>
+
+@if (user == null)
+{
+    <p>Loading</p>
+}
+else
+{
+    <div class="d-flex flex-column g-2 align-items-center" style="gap: 20px;">
+        <a href="/rating/@user.BuyerId">
+            <img class="rounded-circle col-10" src="@myProfilePictureDecoded" />
+        </a>
+        <a href="/settings" class="text-decoration-none w-100">
+            <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><img src="assets/profileIcon.png" /><p class="m-0">Account Settings</p></button>
+        </a>
+        <a href="/orders" class="text-decoration-none w-100">
+            <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><img src="assets/ordersIcon.png" /><p class="m-0">Orders</p></button>
+        </a>
+        <a href="/sold" class="text-decoration-none w-100">
+            <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><img src="assets/soldIcon.png" /><p class="m-0">Sold</p></button>
+        </a>
+        <button @onclick="logout" class="bg-danger w-100 p-2 card d-flex flex-row align-items-center justify-content-center"><p class="m-0">Logout</p></button>
+    </div>
+}
+
+@code {
+    private Buyer user;
+    private string myProfilePictureDecoded;
+
+    protected async override Task OnInitializedAsync()
+    {
+        var token = await localStore.GetItemAsync<string>("credentials");
+        var requestUser = new HttpRequestMessage(HttpMethod.Get, "api/user");
+        requestUser.Headers.Add("Auth", token);
+
+        var userResponse = await Http.SendAsync(requestUser);
+        user = await userResponse.Content.ReadFromJsonAsync<Buyer>();
+        var base64 = Convert.ToBase64String(user.ProfilePicture);
+        myProfilePictureDecoded = String.Format("data:image/jpg;base64,{0}", base64);
+
+    }
+
+    private async void logout()
+    {
+        await localStore.RemoveItemAsync("credentials");
+        NavigationManager.NavigateTo("/");
+    }
+
+}

@@ -155,11 +155,18 @@ namespace Food_Like.Server.Controllers
 
         //Not ready
         [HttpGet("search/{location}")]
-        public async Task<List<Meal>> Search(string location)
+        public async Task<List<Meal>> Search(string location, [FromQuery] int? category)
         {
             using (var context = new foodlikeContext())
             {
-                List<Meal> meals = context.Meal.ToList();
+                List<Meal> meals;
+                if (category != null)
+                {
+                    meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30) && e.Mealcategory.Any(e => e.CategoryId == category)).ToList();
+                } else
+                {
+                    meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30)).ToList();
+                }
                 List<Meal> mealdistance = new List<Meal>();
                 List<dynamic> test = new List<dynamic>();
                 foreach (var meal in meals)
@@ -170,6 +177,7 @@ namespace Food_Like.Server.Controllers
                     var reponseDeserialized = JsonConvert.DeserializeObject<dynamic>(response);
                     mealdistance.Add(
                         new Meal {
+                            DistanceValue = reponseDeserialized.rows[0].elements[0].distance.value,
                             Distance = reponseDeserialized.rows[0].elements[0].distance.text,
                             MealId = meal.MealId,
                             MealPicture = meal.MealPicture,
@@ -188,7 +196,8 @@ namespace Food_Like.Server.Controllers
                         }
                     );
                 }
-                return mealdistance;
+                List<Meal> mealDistanceSorted = mealdistance.OrderBy(e => e.DistanceValue).ToList();
+                return mealDistanceSorted;
             }
         }
 

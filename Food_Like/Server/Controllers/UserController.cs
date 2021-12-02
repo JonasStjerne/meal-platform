@@ -166,7 +166,7 @@ namespace Food_Like.Server.Controllers
                 {
                     //Map relevant data to hide sensitive information
                     var response = context.Meal
-                        .Where(e => e.SellerId == authState.User.BuyerId)
+                        .Where(e => e.SellerId == authState.User.BuyerId && e.PickupTo > DateTime.Now.AddMinutes(-30))
                         .Select(e => new Meal 
                         {
                             Titel = e.Titel,
@@ -199,6 +199,58 @@ namespace Food_Like.Server.Controllers
             }
         }
 
+        [HttpGet("mysoldmeals")]
+        public async Task<ActionResult<List<Meal>>> Mysoldmeals([FromHeader] string Auth)
+        {
+            using (var context = new foodlikeContext())
+            {
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(Auth);
+
+                if (authState.FoundUser == false || !userService.UserIsSeller(authState))
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    //Map relevant data to hide sensitive information
+                    var response = context.Meal
+                        .Where(e => e.SellerId == authState.User.BuyerId && e.PickupTo < DateTime.Now)
+                        .Select(e => new Meal
+                        {
+                            Titel = e.Titel,
+                            Portions = e.Portions,
+                            PortionPrice = e.PortionPrice,
+                            PickupFrom = e.PickupFrom,
+                            PickupTo = e.PickupTo,
+                            MealPicture = e.MealPicture,
+                            Mealorder = e.Mealorder,
+                            Seller = new Seller
+                            {
+                                Address = e.Seller.Address
+                            }
+                        })
+                        .ToList();
+
+                    if (response == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        return Ok(response);
+                    }
+                }
+                catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
+            }
+        }
+
         [HttpGet("myreservations")]
         public async Task<ActionResult<List<Meal>>> GetMyReservations([FromHeader] string Auth)
         {
@@ -218,7 +270,7 @@ namespace Food_Like.Server.Controllers
                     //Map relevant data to hide sensitive information
                     var response = context.Mealorder
                         .Include(e => e.Meal)
-                        .Where(e => e.BuyerId == authState.User.BuyerId)
+                        .Where(e => e.BuyerId == authState.User.BuyerId && e.Meal.PickupTo > DateTime.Now.AddMinutes(-30))
                         .Select(e => new Meal
                         {
                             Titel = e.Meal.Titel,
@@ -227,6 +279,66 @@ namespace Food_Like.Server.Controllers
                             PickupFrom = e.Meal.PickupFrom,
                             PickupTo = e.Meal.PickupTo,
                             MealPicture = e.Meal.MealPicture,
+                            MealId = e.Meal.MealId,
+                            Seller = new Seller
+                            {
+                                Address = e.Meal.Seller.Address,
+                                SellerNavigation = new Buyer
+                                {
+                                    BuyerId = e.Meal.Seller.SellerNavigation.BuyerId,
+                                    PhoneNumber = e.Meal.Seller.SellerNavigation.PhoneNumber,
+                                    ProfilePicture = e.Meal.Seller.SellerNavigation.ProfilePicture
+                                }
+                            }
+                        })
+                        .ToList();
+
+                    if (response == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        return Ok(response);
+                    }
+                }
+                catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
+            }
+        }
+
+        [HttpGet("mypastorders")]
+        public async Task<ActionResult<List<Meal>>> GetMyPastOrders([FromHeader] string Auth)
+        {
+            using (var context = new foodlikeContext())
+            {
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(Auth);
+
+                if (authState.FoundUser == false)
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    //Map relevant data to hide sensitive information
+                    var response = context.Mealorder
+                        .Include(e => e.Meal)
+                        .Where(e => e.BuyerId == authState.User.BuyerId && e.Meal.PickupTo < DateTime.Now)
+                        .Select(e => new Meal
+                        {
+                            Titel = e.Meal.Titel,
+                            Portions = e.Meal.Portions,
+                            PortionPrice = e.Meal.PortionPrice,
+                            PickupFrom = e.Meal.PickupFrom,
+                            PickupTo = e.Meal.PickupTo,
+                            MealPicture = e.Meal.MealPicture,
+                            MealId = e.Meal.MealId,
                             Seller = new Seller
                             {
                                 Address = e.Meal.Seller.Address,

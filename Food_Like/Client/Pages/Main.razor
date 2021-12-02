@@ -10,8 +10,10 @@
     <div class="d-flex">
         <NavLink href="@(isSeller() ? "/createmeal" : "/setupseller")"><button style="height: 30px;" class="px-4 btn btn-primary"><p class="bold text-white text-center text-align">Sell</p></button></NavLink>
         @if (user != null)
-        {
-            <img src="@myProfilePictureDecoded" class="rounded-circle" height="40" width="40" />
+        {   
+            <a href="/myprofile" class="text-decoration-none">
+                <img src="@myProfilePictureDecoded" class="rounded-circle" height="40" width="40" />
+            </a>
         }
     </div>
 </div>
@@ -32,13 +34,13 @@
             var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
             <div class="cardshadow rounded d-flex flex-column mb-3">
                 <div class="w-auto mx-2 d-flex justify-content-between p-2">
-                    <div class="position-relative">
-                        <img src="@mealPicture" class="img-thumbnail img-fluid"/>
+                    <div class="position-relative" style="max-width: 200px; max-height: 150px;">
+                        <img src="@mealPicture" class="img-fluid img-thumbnail"/>
                         <a class="d-block text-decoration-none" href="/rating/@meal.Seller.SellerNavigation.BuyerId">
                             <img src="@picture" heigth="25" width="25" class="rounded-circle position-absolute" style="bottom: -12px; left: -12px;" />
                         </a>
                     </div>
-                    <p>@meal.Titel</p>
+                    <p class="text-center">@meal.Titel</p>
                     <a href="https://www.mobilepay.dk/erhverv/betalingslink/betalingslink-svar?phone=@meal.Seller.SellerNavigation.PhoneNumber&amount=@meal.PortionPrice&comment=Foodlike%20Betaling">
                         <button class="btn btn-primary mr-1"><p class="bold text-white m-0">Pay</p></button>
                     </a>
@@ -82,7 +84,7 @@
             <div class="cardshadow rounded d-flex flex-column mb-3">
                 <div class="w-auto m-2 d-flex justify-content-between">
                     <div>
-                        <img src="@mealPicture" />
+                        <img src="@mealPicture"/>
                     </div>
                     <p>@meal.Titel</p>
                     <button class="btn btn-primary"><p class="bold text-white m-0">Orders</p></button>
@@ -120,10 +122,36 @@
             <button class="btn btn-primary" @onclick="search">Search</button>
         </div>
     </div>
-    <div class="d-flex justify-content-between">
-        <div>
-            <img />
+    <div class="d-flex flex-row justify-content-between w-100 my-3">
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(0)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 0) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
             <small class="w-100 text-center">Dansih</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(1)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 1) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">Asian</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(2)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 2) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">European</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(3)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 3) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">American</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(4)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 4) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">Italian</small>
         </div>
     </div>
 </div>
@@ -143,8 +171,8 @@ else
                 var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
                 var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
                 <div class="col-6 mb-2">
-                    <div class="d-flex justify-content-between">
-                        <a class="d-block text-decoration-none" href="/meal/@meal.MealId">
+                    <div class="d-flex justify-content-between w-100">
+                        <a class="d-flex justify-content-between w-100 text-decoration-none" href="/meal/@meal.MealId">
                             <small>@meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm") @meal.PickupTo.ToString("MM/dd")</small>
                             <small>@meal.Distance</small>
                         </a>
@@ -185,6 +213,7 @@ else
 
 
 @code {
+    private int? selectedCategory;
     private string location = "Boulevarden 13 Aalborg";
     private List<Meal> myMeals;
     private List<Meal> mealReservations { get; set; }
@@ -253,9 +282,29 @@ else
 
     private async void search()
     {
-        var reponse3 = await Http.GetAsync("/api/meal/search/" + location);
+        if (selectedCategory != null)
+        {
+            var reponse3 = await Http.GetAsync("/api/meal/search/" + location + "?category=" + selectedCategory);
+            mealsAndDistance = await reponse3.Content.ReadFromJsonAsync<List<Meal>>();
+            StateHasChanged();
+        } else
+        {
+            var reponse3 = await Http.GetAsync("/api/meal/search/" + location);
+            mealsAndDistance = await reponse3.Content.ReadFromJsonAsync<List<Meal>>();
+            StateHasChanged();
+        }
 
-        mealsAndDistance = await reponse3.Content.ReadFromJsonAsync<List<Meal>>();
-        StateHasChanged();
+    }
+
+    private void SelectCategory(int catId)
+    {
+        if (selectedCategory == catId)
+        {
+            selectedCategory = null;
+            search();
+        } else {
+            selectedCategory = catId;
+            search();
+        }
     }
 }
