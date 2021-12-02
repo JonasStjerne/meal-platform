@@ -32,13 +32,13 @@
             var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
             <div class="cardshadow rounded d-flex flex-column mb-3">
                 <div class="w-auto mx-2 d-flex justify-content-between p-2">
-                    <div class="position-relative">
-                        <img src="@mealPicture" class="img-thumbnail img-fluid"/>
+                    <div class="position-relative" style="max-width: 200px; max-height: 150px;">
+                        <img src="@mealPicture" class="img-fluid img-thumbnail"/>
                         <a class="d-block text-decoration-none" href="/rating/@meal.Seller.SellerNavigation.BuyerId">
                             <img src="@picture" heigth="25" width="25" class="rounded-circle position-absolute" style="bottom: -12px; left: -12px;" />
                         </a>
                     </div>
-                    <p>@meal.Titel</p>
+                    <p class="text-center">@meal.Titel</p>
                     <a href="https://www.mobilepay.dk/erhverv/betalingslink/betalingslink-svar?phone=@meal.Seller.SellerNavigation.PhoneNumber&amount=@meal.PortionPrice&comment=Foodlike%20Betaling">
                         <button class="btn btn-primary mr-1"><p class="bold text-white m-0">Pay</p></button>
                     </a>
@@ -82,7 +82,7 @@
             <div class="cardshadow rounded d-flex flex-column mb-3">
                 <div class="w-auto m-2 d-flex justify-content-between">
                     <div>
-                        <img src="@mealPicture" />
+                        <img src="@mealPicture"/>
                     </div>
                     <p>@meal.Titel</p>
                     <button class="btn btn-primary"><p class="bold text-white m-0">Orders</p></button>
@@ -143,8 +143,8 @@ else
                 var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
                 var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
                 <div class="col-6 mb-2">
-                    <div class="d-flex justify-content-between">
-                        <a class="d-block text-decoration-none" href="/meal/@meal.MealId">
+                    <div class="d-flex justify-content-between w-100">
+                        <a class="d-flex justify-content-between w-100 text-decoration-none" href="/meal/@meal.MealId">
                             <small>@meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm") @meal.PickupTo.ToString("MM/dd")</small>
                             <small>@meal.Distance</small>
                         </a>
