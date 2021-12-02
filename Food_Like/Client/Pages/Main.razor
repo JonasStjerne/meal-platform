@@ -206,7 +206,14 @@ else
         requestMyMeals.Headers.Add("Auth", token);
 
         var response = await Http.SendAsync(requestMyMeals);
-        myMeals = await response.Content.ReadFromJsonAsync<List<Meal>>();
+        if (response.IsSuccessStatusCode)
+        {
+            myMeals = await response.Content.ReadFromJsonAsync<List<Meal>>();
+        } else
+        {
+            myMeals = new List<Meal>();
+        }
+
 
         //Get my reservations
 

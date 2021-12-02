@@ -208,7 +208,7 @@ namespace Food_Like.Server.Controllers
                 var userService = new UserService(context);
                 var authState = userService.GetUser(Auth);
 
-                if (authState.FoundUser == false || !userService.UserIsSeller(authState))
+                if (authState.FoundUser == false)
                 {
                     return Unauthorized();
                 }
