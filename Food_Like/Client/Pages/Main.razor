@@ -11,9 +11,7 @@
         <NavLink href="@(isSeller() ? "/createmeal" : "/setupseller")"><button style="height: 30px;" class="px-4 btn btn-primary"><p class="bold text-white text-center text-align">Sell</p></button></NavLink>
         @if (user != null)
         {
-            <a class="d-block text-decoration-none" href="/rating/@user.BuyerId">
-                <img src="@myProfilePictureDecoded" class="rounded-circle" height="40" width="40" />
-            </a>
+            <img src="@myProfilePictureDecoded" class="rounded-circle" height="40" width="40" />
         }
     </div>
 </div>
@@ -187,7 +185,7 @@ else
 
 
 @code {
-    private string location = "Stjernepladsen 19 Aalborg";
+    private string location = "Boulevarden 13 Aalborg";
     private List<Meal> myMeals;
     private List<Meal> mealReservations { get; set; }
     private Buyer user;
