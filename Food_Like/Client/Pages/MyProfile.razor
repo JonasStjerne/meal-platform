@@ -3,6 +3,7 @@
 @inject HttpClient Http
 @using Food_Like.Shared;
 @inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject NavigationManager NavigationManager
 
 <style>
     .back {
@@ -20,22 +21,22 @@
 @if (user == null)
 {
     <p>Loading</p>
-} else
+}
+else
 {
-<div class="d-flex flex-column g-2 align-items-center" style="gap: 20px;">
-    <img class="rounded-circle col-10" src="@myProfilePictureDecoded" />
-    <a href="/settings" class="text-decoration-none w-100">
-        <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><img src="assets/profileIcon.png" /><p class="m-0">Account Settings</p></button>
-    </a>
-    <a href="/orders" class="text-decoration-none w-100">
-        <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><img src="assets/ordersIcon.png" /><p class="m-0">Orders</p></button>
-    </a>
-    <a href="/sold" class="text-decoration-none w-100">
-        <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><img src="assets/soldIcon.png" /><p class="m-0">Sold</p></button>
-    </a>
-    <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><p class="m-0">Logout</p></button>
-</div>
+    <div class="d-flex flex-column g-2 align-items-center" style="gap: 20px;">
+        <img class="rounded-circle col-10" src="@myProfilePictureDecoded" />
+        <a href="/settings" class="text-decoration-none w-100">
+            <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><img src="assets/profileIcon.png" /><p class="m-0">Account Settings</p></button>
+        </a>
+        <a href="/orders" class="text-decoration-none w-100">
+            <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><img src="assets/ordersIcon.png" /><p class="m-0">Orders</p></button>
+        </a>
+        <a href="/sold" class="text-decoration-none w-100">
+            <button class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><img src="assets/soldIcon.png" /><p class="m-0">Sold</p></button>
+        </a>
         <button @onclick="logout" class="w-100 p-2 card bg-white d-flex flex-row align-items-center justify-content-center"><p class="m-0">Logout</p></button>
+    </div>
 }
 
 @code {
