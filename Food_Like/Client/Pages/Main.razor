@@ -1,57 +1,124 @@
 ﻿@page "/home"
 @using Food_Like.Shared
 @layout MainPageLayout
+@inject HttpClient Http
+@inject Blazored.LocalStorage.ILocalStorageService localStore
 
 
 <div class="d-flex justify-content-between align-items-center">
-    <img style="height: 50px;"src="/assets/logo.png"/>
-    <div>
-        <NavLink href= "@(isSeller() ? "/createmeal" : "/setupseller")"><button style="height: 30px;" class="px-4 btn btn-primary"><p class="bold text-white text-center text-align">Sell</p></button></NavLink>
-        <img src="" />
+    <img style="height: 50px;" src="/assets/logo.png" />
+    <div class="d-flex">
+        <NavLink href="@(isSeller() ? "/createmeal" : "/setupseller")"><button style="height: 30px;" class="px-4 btn btn-primary"><p class="bold text-white text-center text-align">Sell</p></button></NavLink>
+        @if (user != null)
+        {
+            <img src="@myProfilePictureDecoded" class="rounded-circle" height="40" width="40" />
+        }
     </div>
+</div>
+
+<div class="mt-4">
+    @if (mealReservations == null)
+    {
+        <p>Loading</p>
+    }
+    else if (mealReservations.Count > 0)
+    {
+        <p class="bold m-1">My Reservations</p>
+        @foreach (var meal in mealReservations)
+        {
+            var base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
+            var picture = String.Format("data:image/jpg;base64,{0}", base64);
+            var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
+            var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
+            <div class="cardshadow rounded d-flex flex-column mb-3">
+                <div class="w-auto mx-2 d-flex justify-content-between p-2">
+                    <div class="position-relative">
+                        <img src="@mealPicture" class="img-thumbnail img-fluid"/>
+                        <a class="d-block text-decoration-none" href="/rating/@meal.Seller.SellerNavigation.BuyerId">
+                            <img src="@picture" heigth="25" width="25" class="rounded-circle position-absolute" style="bottom: -12px; left: -12px;" />
+                        </a>
+                    </div>
+                    <p>@meal.Titel</p>
+                    <a href="https://www.mobilepay.dk/erhverv/betalingslink/betalingslink-svar?phone=@meal.Seller.SellerNavigation.PhoneNumber&amount=@meal.PortionPrice&comment=Foodlike%20Betaling">
+                        <button class="btn btn-primary mr-1"><p class="bold text-white m-0">Pay</p></button>
+                    </a>
+                    <a href="tel:@meal.Seller.SellerNavigation.PhoneNumber"><img src="assets/callIcon.png" width="30" height="30" alt="Call seller link" /></a>
+                </div>
+                <div class="w-auto mx-2">
+                    <table class="w-100 text-center">
+                        <thead>
+                            <tr>
+                                <td>Pickup at</td>
+                                <td>Adress</td>
+                                <td>Price</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><p class="text-primary">@meal.PickupFrom.ToShortDateString() <br /> Kl. @meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm")</p></td>
+                                <td><p class="text-break text-primary">@meal.Seller.Address.Line1 @meal.Seller.Address.Line2, <br /> @meal.Seller.Address.City </p></td>
+                                <td><p class="text-primary">@meal.PortionPrice</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
 </div>
 
 <div>
-    <p class="bold">My Reservations</p>
-    <div class="cardshadow rounded d-flex flex-column">
-        <div class="w-auto mx-2 d-flex justify-content-between">
-            <div>
-                <img />
-                <img />
+    @if (myMeals == null)
+    {
+        <p>Loading</p>
+    }
+    else if (myMeals.Count > 0)
+    {
+        <p class="bold m-1 mt-4">Meal for sale</p>
+        @foreach (var meal in myMeals)
+        {
+            var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
+            var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
+            <div class="cardshadow rounded d-flex flex-column mb-3">
+                <div class="w-auto m-2 d-flex justify-content-between">
+                    <div>
+                        <img src="@mealPicture" />
+                    </div>
+                    <p>@meal.Titel</p>
+                    <button class="btn btn-primary"><p class="bold text-white m-0">Orders</p></button>
+                </div>
+                <div class="w-auto mx-2">
+                    <table class="w-100 text-center">
+                        <thead>
+                            <tr>
+                                <td>Pickup at</td>
+                                <td>Sold</td>
+                                <td>Price</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><p class="text-primary">@meal.PickupFrom.ToShortDateString() <br /> @meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm")</p></td>
+                                <td><p class="text-primary">@meal.Reserved / @meal.Portions</p></td>
+                                <td><p class="text-primary">@meal.PortionPrice</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <p>Titel</p>
-
-            <button class="btn btn-primary"><p class="bold text-white">Pay</p></button>
-            <img src="assets/callIcon.png" width="50" alt="Alternate Text" />
-        </div>
-        <div class="w-auto mx-2">
-            <table class="w-100 text-center">
-                <thead>
-                    <tr>
-                        <td>Pickup at</td>
-                        <td>Adress</td>
-                        <td>Price</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Date</td>
-                        <td>adresse</td>
-                        <td>price</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+        }
+    }
 </div>
+
+
 
 <div>
     <div class="d-flex justify-content-between">
         <div>
-            <img />
-            <a>Locationdata</a>
+            <img src="assets/locationIcon.png" />
+            <input @bind-value="@location" placeholder="Search by location"/>
+            <button class="btn btn-primary" @onclick="search">Search</button>
         </div>
-        <p style="color: var(--highlight)">Today</p>
     </div>
     <div class="d-flex justify-content-between">
         <div>
@@ -61,41 +128,134 @@
     </div>
 </div>
 
-<div class="container">
-    <div class="row row-cols-2">
-        <div>
-            <div class="d-flex justify-content-between">
-                <small>19:00-19:20 20/1</small>
-                <small>700m</small>
-            </div>
-            <div style="background-image: url('')">
-                <div class="d-flex justify-content-end w-100">
-                    <div class="card bg-white"><small class="text-center">20 kr</small></div>
-                </div>
-            </div>
-            <div>
-                <p class="text-break">Spaghetti w/ chicken</p>
-                <div>
-                    <img />
-                    <div>
-                        <img />
-                        <p style="color: yellow;">4,6</p>
+@if (mealsAndDistance == null)
+{
+    <p>Loading</p>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            @foreach (var meal in mealsAndDistance)
+            {
+                var base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
+                var picture = String.Format("data:image/jpg;base64,{0}", base64);
+                var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
+                var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
+                <div class="col-6 mb-2">
+                    <div class="d-flex justify-content-between">
+                        <a class="d-block text-decoration-none" href="/meal/@meal.MealId">
+                            <small>@meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm") @meal.PickupTo.ToString("MM/dd")</small>
+                            <small>@meal.Distance</small>
+                        </a>
+                    </div>
+                    <a class="d-block text-decoration-none" href="/meal/@meal.MealId">
+                        <div style="background-image: url('@mealPicture'); height: 50px; background-repeat: no-repeat; background-size: cover;">
+                            <div class="d-flex justify-content-end w-100">
+                                <div class="card bg-white"><small class="text-center">@meal.PortionPrice</small></div>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="d-flex flex-row justify-content-between position-relative">
+                        <p class=" m-0 text-break">@meal.Titel</p>
+                        <div class="d-flex justify-content-center flex-column" style="width: 40px;">
+                            <a class="d-block text-decoration-none" href="/rating/@meal.Seller.SellerId">
+                                <img src="@picture" heigth="40" width="40" class="rounded-circle position-absolute" style="top: -20px; right: 0;" />
+                            </a>
+                            <div style="height: 20px;"></div>
+                            <div class="d-flex flex-row align-items-end justify-content-center">
+                                <img height="20" width="20" src="assets/Star.png" />
+                                @if (meal.Rating == -1)
+                                {
+                                    <p class="m-0" style="color: #FFC700;">3</p>
+                                } else
+                                {
+                                    <p class="m-0" style="color: #FFC700;">@meal.Rating</p>
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
+
     </div>
-</div>
+}
 
 
 
 @code {
+    private string location = "Boulevarden 13 Aalborg";
+    private List<Meal> myMeals;
+    private List<Meal> mealReservations { get; set; }
+    private Buyer user;
+    private string myProfilePictureDecoded;
+    private bool userIsSeller { get; set; }
+    private List<Meal> mealsAndDistance;
 
-    private Mealorder orders = new Mealorder();
+    private Dictionary<Meal, int> browseMeals;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await localStore.GetItemAsync<string>("credentials");
+
+        //Get my meals
+        var requestMyMeals = new HttpRequestMessage(HttpMethod.Get, "api/user/mymeals");
+        requestMyMeals.Headers.Add("Auth", token);
+
+        var response = await Http.SendAsync(requestMyMeals);
+        if (response.IsSuccessStatusCode)
+        {
+            myMeals = await response.Content.ReadFromJsonAsync<List<Meal>>();
+        } else
+        {
+            myMeals = new List<Meal>();
+        }
+
+
+        //Get my reservations
+
+        var requestMyReservations = new HttpRequestMessage(HttpMethod.Get, "api/user/myreservations");
+        requestMyReservations.Headers.Add("Auth", token);
+
+        var response2 = await Http.SendAsync(requestMyReservations);
+        mealReservations = await response2.Content.ReadFromJsonAsync<List<Meal>>();
+
+
+        //Get profile
+
+        var requestUser = new HttpRequestMessage(HttpMethod.Get, "api/user");
+        requestUser.Headers.Add("Auth", token);
+
+        var userResponse = await Http.SendAsync(requestUser);
+        user = await userResponse.Content.ReadFromJsonAsync<Buyer>();
+        if (user.Seller != null)
+        {
+            userIsSeller = true;
+        }
+        else
+        {
+            userIsSeller = false;
+        }
+        var base64 = Convert.ToBase64String(user.ProfilePicture);
+        myProfilePictureDecoded = String.Format("data:image/jpg;base64,{0}", base64);
+
+        //Get meals by location
+
+        search();
+
+    }
 
     private bool isSeller()
     {
-        return false;
+        return userIsSeller;
+    }
+
+    private async void search()
+    {
+        var reponse3 = await Http.GetAsync("/api/meal/search/" + location);
+
+        mealsAndDistance = await reponse3.Content.ReadFromJsonAsync<List<Meal>>();
+        StateHasChanged();
     }
 }

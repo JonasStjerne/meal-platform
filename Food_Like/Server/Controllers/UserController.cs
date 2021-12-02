@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Food_Like.Server.Controllers
 {
@@ -16,12 +17,44 @@ namespace Food_Like.Server.Controllers
     public class UserController : ControllerBase
     {
 
+
+        //Get All userinformation
         [HttpGet]
-        public IEnumerable<Buyer> Get()
+        public IActionResult Get([FromHeader] string Auth)
         {
             using (var context = new foodlikeContext())
             {
-                return context.Buyer.ToList();
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(Auth);
+
+                if (authState.FoundUser == false)
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    if (userService.UserIsSeller(authState))
+                    {
+                   
+                            return Ok(context.Buyer
+                                .Where(buyer => buyer.BuyerId == authState.User.BuyerId)
+                                .Include(e => e.Seller)
+                                .First()
+                            );
+                    
+                    } else
+                    {
+                    
+                            return Ok(context.Buyer.Where(buyer => buyer.BuyerId == authState.User.BuyerId).First());
+                
+                    }
+                } catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
             }
         }
 
@@ -75,7 +108,7 @@ namespace Food_Like.Server.Controllers
                         Success = false
                     };
                 }
-               
+
             }
         }
 
@@ -115,5 +148,113 @@ namespace Food_Like.Server.Controllers
             }
         }
 
+        [HttpGet("mymeals")]
+        public async Task<ActionResult<List<Meal>>> GetMyMeals([FromHeader] string Auth)
+        {
+            using (var context = new foodlikeContext())
+            {
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(Auth);
+
+                if (authState.FoundUser == false || !userService.UserIsSeller(authState))
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    //Map relevant data to hide sensitive information
+                    var response = context.Meal
+                        .Where(e => e.SellerId == authState.User.BuyerId)
+                        .Select(e => new Meal 
+                        {
+                            Titel = e.Titel,
+                            Portions = e.Portions,
+                            PortionPrice = e.PortionPrice,
+                            PickupFrom = e.PickupFrom,
+                            PickupTo = e.PickupTo,
+                            MealPicture = e.MealPicture,
+                            Mealorder = e.Mealorder,
+                            Seller = new Seller
+                            {
+                                Address = e.Seller.Address
+                            }
+                        })
+                        .ToList();
+
+                    if (response == null)
+                    {
+                        return NotFound();
+                    } else
+                    {
+                        return Ok(response);
+                    }
+                }
+                catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
+            }
+        }
+
+        [HttpGet("myreservations")]
+        public async Task<ActionResult<List<Meal>>> GetMyReservations([FromHeader] string Auth)
+        {
+            using (var context = new foodlikeContext())
+            {
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(Auth);
+
+                if (authState.FoundUser == false)
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    //Map relevant data to hide sensitive information
+                    var response = context.Mealorder
+                        .Include(e => e.Meal)
+                        .Where(e => e.BuyerId == authState.User.BuyerId)
+                        .Select(e => new Meal
+                        {
+                            Titel = e.Meal.Titel,
+                            Portions = e.Meal.Portions,
+                            PortionPrice = e.Meal.PortionPrice,
+                            PickupFrom = e.Meal.PickupFrom,
+                            PickupTo = e.Meal.PickupTo,
+                            MealPicture = e.Meal.MealPicture,
+                            Seller = new Seller
+                            {
+                                Address = e.Meal.Seller.Address,
+                                SellerNavigation = new Buyer
+                                {
+                                    BuyerId = e.Meal.Seller.SellerNavigation.BuyerId,
+                                    PhoneNumber = e.Meal.Seller.SellerNavigation.PhoneNumber,
+                                    ProfilePicture = e.Meal.Seller.SellerNavigation.ProfilePicture
+                                }
+                            }
+                        })
+                        .ToList();
+
+                    if (response == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        return Ok(response);
+                    }
+                }
+                catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
+            }
+        }
     }
 }

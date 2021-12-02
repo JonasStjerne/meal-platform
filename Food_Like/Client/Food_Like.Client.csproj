@@ -41,6 +41,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="wwwroot\assets\TestAssets\" />
     <None Remove="Tewr.Blazor.FileReader" />
   </ItemGroup>
 </Project>

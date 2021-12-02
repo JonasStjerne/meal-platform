@@ -71,7 +71,7 @@
     Description
     </textarea>
 
-    <input type="text" class="form-control mb-2" placeholder="Ingridients" @bind="ingridients" required>
+    <input type="text" class="form-control mb-2" placeholder="Ingridients seperate with komma" @bind="ingridients" required>
 
     <label for="pickupfrom">Pick up from</label>
     <input id="pickupfrom" type="datetime-local" class="form-control mb-2" @bind-value="pickupFrom" required>
@@ -158,7 +158,7 @@
     private async void submitCreateMeal()
     {
         errorMessage = "";
-        CreateMealRequest data = new CreateMealRequest()
+        Meal data = new Meal()
         {
             Titel = titel,
             Portions = portions,
@@ -170,7 +170,7 @@
             MealPicture = mealPicture
         };
 
-        Auth<CreateMealRequest> authRequest = new Auth<CreateMealRequest>(token)
+        Auth<Meal> authRequest = new Auth<Meal>(token)
         {
             Request = data
         };
