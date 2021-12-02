@@ -167,6 +167,7 @@ namespace Food_Like.Server.Controllers
                     var reponseDeserialized = JsonConvert.DeserializeObject<dynamic>(response);
                     mealdistance.Add(
                         new Meal {
+                            DistanceValue = reponseDeserialized.rows[0].elements[0].distance.value,
                             Distance = reponseDeserialized.rows[0].elements[0].distance.text,
                             MealId = meal.MealId,
                             MealPicture = meal.MealPicture,
@@ -185,7 +186,8 @@ namespace Food_Like.Server.Controllers
                         }
                     );
                 }
-                return mealdistance;
+                List<Meal> mealDistanceSorted = mealdistance.OrderBy(e => e.DistanceValue).ToList();
+                return mealDistanceSorted;
             }
         }
 

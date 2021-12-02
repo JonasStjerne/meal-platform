@@ -66,5 +66,8 @@ namespace Food_Like.Shared
         [NotMapped]
         public dynamic Distance { get; set; }
 
+        [NotMapped]
+        public int DistanceValue { get; set; }
+
     }
 }
