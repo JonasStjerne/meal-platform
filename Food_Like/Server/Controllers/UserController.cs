@@ -227,6 +227,7 @@ namespace Food_Like.Server.Controllers
                             PickupFrom = e.Meal.PickupFrom,
                             PickupTo = e.Meal.PickupTo,
                             MealPicture = e.Meal.MealPicture,
+                            MealId = e.Meal.MealId,
                             Seller = new Seller
                             {
                                 Address = e.Meal.Seller.Address,
