@@ -152,11 +152,18 @@ namespace Food_Like.Server.Controllers
 
         //Not ready
         [HttpGet("search/{location}")]
-        public async Task<List<Meal>> Search(string location, [FromQuery] CategoryType category)
+        public async Task<List<Meal>> Search(string location, [FromQuery] int? category)
         {
             using (var context = new foodlikeContext())
             {
-                List<Meal> meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30)).ToList();
+                List<Meal> meals;
+                if (category != null)
+                {
+                    meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30)).ToList();
+                } else
+                {
+                    meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30)).ToList();
+                }
                 List<Meal> mealdistance = new List<Meal>();
                 List<dynamic> test = new List<dynamic>();
                 foreach (var meal in meals)
