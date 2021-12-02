@@ -1,0 +1,76 @@
+﻿@page "/sold"
+@layout MainPageLayout
+@inject HttpClient Http
+@using Food_Like.Shared;
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+
+<style>
+    .back {
+        position: absolute;
+        left: 20px;
+        top: 19px;
+        z-index: 10;
+    }
+</style>
+<div class="back">
+    <a href="/myprofile"> <img style=" height: 30px; width: 30px;" src="/assets/back.png" /> </a>
+</div>
+<h2 class="text-center">Sold</h2>
+
+@if (myMeals == null)
+{
+    <p>Loading</p>
+}
+else
+{
+    @foreach (var meal in myMeals)
+    {
+        var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
+        var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
+        <div class="cardshadow rounded d-flex flex-column mb-3">
+            <div class="w-auto m-2 d-flex justify-content-between">
+                <div>
+                    <img src="@mealPicture" />
+                </div>
+                <p>@meal.Titel</p>
+                <button class="btn btn-primary"><p class="bold text-white m-0">Orders</p></button>
+            </div>
+            <div class="w-auto mx-2">
+                <table class="w-100 text-center">
+                    <thead>
+                        <tr>
+                            <td>Pickup at</td>
+                            <td>Sold</td>
+                            <td>Price</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><p class="text-primary">@meal.PickupFrom.ToShortDateString() <br /> @meal.PickupFrom.ToString("H:mm") - @meal.PickupTo.ToString("H:mm")</p></td>
+                            <td><p class="text-primary">@meal.Reserved / @meal.Portions</p></td>
+                            <td><p class="text-primary">@meal.PortionPrice</p></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}
+
+
+@code {
+    private List<Meal> myMeals { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        var token = await localStore.GetItemAsync<string>("credentials"); 
+        var requestMyReservations = new HttpRequestMessage(HttpMethod.Get, "api/user/mysoldmeals");
+        requestMyReservations.Headers.Add("Auth", token);
+
+        var response2 = await Http.SendAsync(requestMyReservations);
+        myMeals = await response2.Content.ReadFromJsonAsync<List<Meal>>();
+
+    }
+
+}
