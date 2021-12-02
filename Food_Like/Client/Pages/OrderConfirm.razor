@@ -5,10 +5,15 @@
 @using Food_Like.Shared;
 @inject Blazored.LocalStorage.ILocalStorageService localStore
 
+<style>
+    .back {
+        margin:20px;
+    }
+</style>
 
 
-<div class="px-4" style="padding-top: 1.5rem; padding-bottom: 1.5rem; height: 15px; width: 15px;">
-    <a href="/index"> <img src="/assets/back.png" /> </a> 
+<div class="back">
+    <a href="/meal/@mealId"> <img style=" height: 30px; width: 30px;" src="/assets/back.png" /> </a>
 </div>
 
 
@@ -21,15 +26,15 @@
 
 @if (meal != null)
 {
-    <div class="container px-4">
+    <div class="container ">
 
         <div class="row">
-            <div class="col-3" style="margin-right:20px;">
-                <img src="@mealPicSrc" alt="..." style="height:90px; width:140px;"/>
+            <div class="col-5">
+                <img src="@mealPicSrc" alt="..." style="width: 100%" />
             </div>
-            <div class="col-9">
+            <div class="col-7">
 
-                <p>@meal.Titel</p>
+                <p class="bold">@meal.Titel</p>
 
                 <p>@portions portion</p>
 

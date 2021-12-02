@@ -41,7 +41,7 @@
 {
 
     <div class="back">
-        <a href="@referer"> <img style=" height: 30px; width: 30px;" src="/assets/back.png" /> </a>
+        <a href="/home"> <img style=" height: 30px; width: 30px;" src="/assets/back.png" /> </a>
     </div>
     <div class="kitchenimg">
         <img src="@kitchenPic" />
@@ -128,13 +128,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        referer = await JS.InvokeAsync<string>("getReferer");
-        Console.WriteLine("Referer: " + referer);
-
-        if (referer == null || referer.Length == 0)
-        {
-            referer = "/";
-        }
+        
 
         var response = await Http.GetAsync("api/user/" + sellerId.ToString() + "/ratings");
         if (response.IsSuccessStatusCode)

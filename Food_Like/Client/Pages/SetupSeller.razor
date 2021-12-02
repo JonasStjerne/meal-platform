@@ -3,7 +3,8 @@
 @inject NavigationManager NavManager
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService localStore
-
+@using Tewr.Blazor.FileReader
+@inject IFileReaderService FileReaderService;
 
 <style>
 
@@ -37,7 +38,25 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+
+    .createpicture {
+        height: 118px;
+        width: 118px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .kitchenpicture {
+        height: 118px;
+        width: 118px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 100%;
+    }
 </style>
+
+
+
 <form class="form-signin">
     <label for="inputEmail" class="sr-only">Address</label>
     <input type="text" id="inputEmail" class="form-control mb-2" placeholder="Address" @bind="line1" required autofocus>
@@ -45,6 +64,16 @@
     <input type="text" id="inputPassword" class="form-control" placeholder="City" @bind="city" required>
     <button type="button" class="mt-4 btn btn-lg btn-primary btn-block" @onclick="submitSetupSeller">Login</button>
 </form>
+
+<div class="createpicture">
+    <input type="file" id="file-upload" style="display: none" @ref="inputTypeFileElement" @onchange="HandleUpload" />
+    <label for="file-upload" style="cursor: pointer">
+        @if (kitchenPictureSrc != null)
+        {
+            <img src="@kitchenPictureSrc" class="kitchenpicture" alt="Profile Picture">}
+    </label>
+</div>
+
 @if (errorMessage.Length > 0)
 {
     <div class="alert alert-danger" role="alert">
@@ -53,13 +82,45 @@
 }
 
 
+
+
 @code {
+    private ElementReference inputTypeFileElement;
     const string credentials = "credentials";
     private string line1 { get; set; }
     private string city { get; set; }
-    private byte[] kitchenPicture { get; set; }
+    private byte[] kitchenPicture { get; set; } = new byte[] { };
     private string errorMessage = "";
     private string token { get; set; }
+ 
+
+    private string kitchenPictureSrc = null;
+
+    protected async override Task OnInitializedAsync()
+    {
+        var defaultImg = await Http.GetByteArrayAsync("/assets/addpic.png");
+        var base64 = Convert.ToBase64String(defaultImg);
+        kitchenPictureSrc = String.Format("data:image/jpg;base64,{0}", base64);
+    }
+
+    private async Task HandleUpload()
+    {
+        foreach (var file in await FileReaderService.CreateReference(inputTypeFileElement).EnumerateFilesAsync())
+        {
+            if (file != null)
+            {
+                var fileInfo = await file.ReadFileInfoAsync();
+                using (var ms = await file.CreateMemoryStreamAsync(4 * 1024))
+                {
+                    kitchenPicture = new byte[fileInfo.Size];
+                    kitchenPicture = ms.ToArray();
+                    var base64 = Convert.ToBase64String(kitchenPicture);
+                    kitchenPictureSrc = String.Format("data:image/jpg;base64,{0}", base64);
+                }
+            }
+        }
+    }
+
 
     protected async override void OnInitialized()
     {
@@ -78,7 +139,7 @@
 
         SetupSellerRequest data = new SetupSellerRequest()
         {
-            KitchenPicture = new byte[0],
+            KitchenPicture = kitchenPicture,
             Address = address
         };
 

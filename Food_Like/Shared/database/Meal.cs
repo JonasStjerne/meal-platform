@@ -33,38 +33,7 @@ namespace Food_Like.Shared
         public virtual ICollection<Mealorder> Mealorder { get; set; }
         public virtual ICollection<Review> Review { get; set; }
 
-        public decimal Rating
-        {
-            get
-            {
-                if (Review.Count == 0)
-                {
-                    return -1;
-                }
-                decimal sum = 0;
-                foreach(Review review in Review)
-                {
-                    sum += review.Rating;
-                }
-                return sum / Review.Count;
-            }
-        }
-
-
-        public decimal Reserved
-        {
-            get
-            {
-                int sum = 0;
-                foreach (Mealorder order in Mealorder)
-                {
-                    sum += order.Quantity;
-                }
-                return sum;
-            }
-        }
         [NotMapped]
         public dynamic Distance { get; set; }
-
     }
 }
