@@ -169,6 +169,7 @@ namespace Food_Like.Server.Controllers
                         new Meal {
                             Distance = reponseDeserialized.rows[0].elements[0].distance.text,
                             MealId = meal.MealId,
+                            MealPicture = meal.MealPicture,
                             Seller = new Seller 
                             { 
                                 SellerId = meal.SellerId,

@@ -30,16 +30,20 @@
         {
             var base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
             var picture = String.Format("data:image/jpg;base64,{0}", base64);
+            var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
+            var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
             <div class="cardshadow rounded d-flex flex-column mb-3">
-                <div class="w-auto mx-2 d-flex justify-content-between  p-2">
+                <div class="w-auto mx-2 d-flex justify-content-between p-2">
                     <div class="position-relative">
-                        <img src="assets/TestAssets/image 1.png" />
+                        <img src="@mealPicture" class="img-thumbnail img-fluid"/>
                         <a class="d-block text-decoration-none" href="/rating/@meal.Seller.SellerNavigation.BuyerId">
                             <img src="@picture" heigth="25" width="25" class="rounded-circle position-absolute" style="bottom: -12px; left: -12px;" />
                         </a>
                     </div>
                     <p>@meal.Titel</p>
-                    <a href="https://www.mobilepay.dk/erhverv/betalingslink/betalingslink-svar?phone=@meal.Seller.SellerNavigation.PhoneNumber&amount=@meal.PortionPrice&comment=Foodlike%20Betaling"><button class="btn btn-primary"><p class="bold text-white m-0">Pay</p></button></a>
+                    <a href="https://www.mobilepay.dk/erhverv/betalingslink/betalingslink-svar?phone=@meal.Seller.SellerNavigation.PhoneNumber&amount=@meal.PortionPrice&comment=Foodlike%20Betaling">
+                        <button class="btn btn-primary mr-1"><p class="bold text-white m-0">Pay</p></button>
+                    </a>
                     <a href="tel:@meal.Seller.SellerNavigation.PhoneNumber"><img src="assets/callIcon.png" width="30" height="30" alt="Call seller link" /></a>
                 </div>
                 <div class="w-auto mx-2">
@@ -75,10 +79,12 @@
         <p class="bold m-1 mt-4">Meal for sale</p>
         @foreach (var meal in myMeals)
         {
+            var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
+            var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
             <div class="cardshadow rounded d-flex flex-column mb-3">
                 <div class="w-auto m-2 d-flex justify-content-between">
                     <div>
-                        <img src="assets/TestAssets/image 1.png" />
+                        <img src="@mealPicture" />
                     </div>
                     <p>@meal.Titel</p>
                     <button class="btn btn-primary"><p class="bold text-white m-0">Orders</p></button>
@@ -136,6 +142,8 @@ else
             {
                 var base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
                 var picture = String.Format("data:image/jpg;base64,{0}", base64);
+                var base64MealPicture = Convert.ToBase64String(meal.MealPicture);
+                var mealPicture = String.Format("data:image/jpg;base64,{0}", base64MealPicture);
                 <div class="col-6 mb-2">
                     <div class="d-flex justify-content-between">
                         <a class="d-block text-decoration-none" href="/meal/@meal.MealId">
@@ -144,7 +152,7 @@ else
                         </a>
                     </div>
                     <a class="d-block text-decoration-none" href="/meal/@meal.MealId">
-                        <div style="background-image: url('assets/TestAssets/image 1.png'); height: 50px; background-repeat: no-repeat; background-size: cover;">
+                        <div style="background-image: url('@mealPicture'); height: 50px; background-repeat: no-repeat; background-size: cover;">
                             <div class="d-flex justify-content-end w-100">
                                 <div class="card bg-white"><small class="text-center">@meal.PortionPrice</small></div>
                             </div>
