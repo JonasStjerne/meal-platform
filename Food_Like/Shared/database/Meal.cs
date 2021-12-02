@@ -34,6 +34,12 @@ namespace Food_Like.Shared
         public virtual ICollection<Review> Review { get; set; }
 
         [NotMapped]
+        public int Reserved { get; set; }
+
+        [NotMapped]
+        public decimal Rating { get; set; } = -1;
+
+        [NotMapped]
         public dynamic Distance { get; set; }
     }
 }
