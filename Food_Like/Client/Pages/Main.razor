@@ -122,10 +122,36 @@
             <button class="btn btn-primary" @onclick="search">Search</button>
         </div>
     </div>
-    <div class="d-flex justify-content-between">
-        <div>
-            <img />
+    <div class="d-flex flex-row justify-content-between w-100 my-3">
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(0)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 0) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
             <small class="w-100 text-center">Dansih</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(1)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 1) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">Asian</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(2)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 2) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">European</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(3)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 3) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">American</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(4)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 4) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">Italian</small>
         </div>
     </div>
 </div>
@@ -187,6 +213,7 @@ else
 
 
 @code {
+    private int? selectedCategory;
     private string location = "Boulevarden 13 Aalborg";
     private List<Meal> myMeals;
     private List<Meal> mealReservations { get; set; }
@@ -255,9 +282,29 @@ else
 
     private async void search()
     {
-        var reponse3 = await Http.GetAsync("/api/meal/search/" + location);
+        if (selectedCategory != null)
+        {
+            var reponse3 = await Http.GetAsync("/api/meal/search/" + location + "?category=" + selectedCategory);
+            mealsAndDistance = await reponse3.Content.ReadFromJsonAsync<List<Meal>>();
+            StateHasChanged();
+        } else
+        {
+            var reponse3 = await Http.GetAsync("/api/meal/search/" + location);
+            mealsAndDistance = await reponse3.Content.ReadFromJsonAsync<List<Meal>>();
+            StateHasChanged();
+        }
 
-        mealsAndDistance = await reponse3.Content.ReadFromJsonAsync<List<Meal>>();
-        StateHasChanged();
+    }
+
+    private void SelectCategory(int catId)
+    {
+        if (selectedCategory == catId)
+        {
+            selectedCategory = null;
+            search();
+        } else {
+            selectedCategory = catId;
+            search();
+        }
     }
 }

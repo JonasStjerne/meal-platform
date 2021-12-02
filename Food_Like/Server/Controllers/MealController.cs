@@ -152,7 +152,7 @@ namespace Food_Like.Server.Controllers
 
         //Not ready
         [HttpGet("search/{location}")]
-        public async Task<List<Meal>> Search(string location)
+        public async Task<List<Meal>> Search(string location, [FromQuery] CategoryType category)
         {
             using (var context = new foodlikeContext())
             {
