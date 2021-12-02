@@ -27,7 +27,9 @@
                 <div class="w-auto mx-2 d-flex justify-content-between  p-2">
                     <div class="position-relative">
                         <img src="assets/TestAssets/image 1.png" />
-                        <img src="assets/bob.png" heigth="25" width="25" class="rounded-circle position-absolute" style="bottom: -12px; left: -12px;" />
+                        <a class="d-block text-decoration-none" href="/rating/@meal.Seller.SellerNavigation.BuyerId">
+                            <img src="assets/bob.png" heigth="25" width="25" class="rounded-circle position-absolute" style="bottom: -12px; left: -12px;" />
+                        </a>
                     </div>
                     <p>@meal.Titel</p>
                     <a href="https://www.mobilepay.dk/erhverv/betalingslink/betalingslink-svar?phone=@meal.Seller.SellerNavigation.PhoneNumber&amount=@meal.PortionPrice&comment=Foodlike%20Betaling"><button class="btn btn-primary"><p class="bold text-white m-0">Pay</p></button></a>
@@ -63,7 +65,7 @@
     }
     else if (myMeals.Count > 0)
     {
-        <p class="bold m-1">Meal for sale</p>
+        <p class="bold m-1 mt-4">Meal for sale</p>
         @foreach (var meal in myMeals)
         {
             <div class="cardshadow rounded d-flex flex-column mb-3">
@@ -142,7 +144,9 @@ else
                     <div class="d-flex flex-row justify-content-between position-relative">
                         <p class=" m-0 text-break">@meal.Titel</p>
                         <div class="d-flex justify-content-center flex-column" style="width: 40px;">
-                            <img src="assets/bob.png" heigth="40" width="40" class="rounded-circle position-absolute" style="top: -20px; right: 0;" />
+                            <a class="d-block text-decoration-none" href="/rating/@meal.SellerId">
+                                <img src="assets/bob.png" heigth="40" width="40" class="rounded-circle position-absolute" style="top: -20px; right: 0;" />
+                            </a>
                             <div style="height: 20px;"></div>
                             <div class="d-flex flex-row align-items-end">
                                 <img height="20" width="20" src="assets/Star.png" />

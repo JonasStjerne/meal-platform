@@ -231,6 +231,7 @@ namespace Food_Like.Server.Controllers
                                 Address = e.Meal.Seller.Address,
                                 SellerNavigation = new Buyer
                                 {
+                                    BuyerId = e.Meal.Seller.SellerNavigation.BuyerId,
                                     PhoneNumber = e.Meal.Seller.SellerNavigation.PhoneNumber
                                 }
                             }
