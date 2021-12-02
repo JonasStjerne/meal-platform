@@ -166,7 +166,7 @@ namespace Food_Like.Server.Controllers
                 {
                     //Map relevant data to hide sensitive information
                     var response = context.Meal
-                        .Where(e => e.SellerId == authState.User.BuyerId)
+                        .Where(e => e.SellerId == authState.User.BuyerId && e.PickupTo > DateTime.Now.AddMinutes(-30))
                         .Select(e => new Meal 
                         {
                             Titel = e.Titel,
@@ -218,7 +218,7 @@ namespace Food_Like.Server.Controllers
                     //Map relevant data to hide sensitive information
                     var response = context.Mealorder
                         .Include(e => e.Meal)
-                        .Where(e => e.BuyerId == authState.User.BuyerId)
+                        .Where(e => e.BuyerId == authState.User.BuyerId && e.Meal.PickupTo > DateTime.Now.AddMinutes(-30))
                         .Select(e => new Meal
                         {
                             Titel = e.Meal.Titel,
