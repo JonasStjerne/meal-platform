@@ -162,7 +162,7 @@ namespace Food_Like.Server.Controllers
                 List<Meal> meals;
                 if (category != null)
                 {
-                    meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30)).ToList();
+                    meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30) && e.Mealcategory.Any(e => e.CategoryId == category)).ToList();
                 } else
                 {
                     meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30)).ToList();
