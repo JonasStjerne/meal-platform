@@ -33,8 +33,8 @@
         }
 </style>
 <form class="form-signin">
-    <label for="stars">How many stars would you give this meal?</label>
-    <img src="assets/Star.png"/>
+    <label for="stars">How many stars would you give this meal? (0-5)</label>
+    @*<img src="assets/Star.png"/>*@
     <input id="stars" type="number" class="form-control mb-2" min="0" max="5" @bind="stars" required>
 
     <textarea type="text" class="form-control mb-2" rows="10" @bind="comment" required>Comment</textarea>

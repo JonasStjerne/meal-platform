@@ -68,7 +68,7 @@ else
     protected async override Task OnInitializedAsync()
     {
         var token = await localStore.GetItemAsync<string>("credentials");
-        var requestMyReservations = new HttpRequestMessage(HttpMethod.Get, "api/user/myreservations");
+        var requestMyReservations = new HttpRequestMessage(HttpMethod.Get, "api/user/mypastorders");
         requestMyReservations.Headers.Add("Auth", token);
 
         var response2 = await Http.SendAsync(requestMyReservations);

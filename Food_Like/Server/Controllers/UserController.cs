@@ -257,5 +257,64 @@ namespace Food_Like.Server.Controllers
 
             }
         }
+
+        [HttpGet("mypastorders")]
+        public async Task<ActionResult<List<Meal>>> GetMyPastOrders([FromHeader] string Auth)
+        {
+            using (var context = new foodlikeContext())
+            {
+                //Standard check for authorized access and make sure is seller
+                var userService = new UserService(context);
+                var authState = userService.GetUser(Auth);
+
+                if (authState.FoundUser == false)
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    //Map relevant data to hide sensitive information
+                    var response = context.Mealorder
+                        .Include(e => e.Meal)
+                        .Where(e => e.BuyerId == authState.User.BuyerId && e.Meal.PickupTo < DateTime.Now)
+                        .Select(e => new Meal
+                        {
+                            Titel = e.Meal.Titel,
+                            Portions = e.Meal.Portions,
+                            PortionPrice = e.Meal.PortionPrice,
+                            PickupFrom = e.Meal.PickupFrom,
+                            PickupTo = e.Meal.PickupTo,
+                            MealPicture = e.Meal.MealPicture,
+                            MealId = e.Meal.MealId,
+                            Seller = new Seller
+                            {
+                                Address = e.Meal.Seller.Address,
+                                SellerNavigation = new Buyer
+                                {
+                                    BuyerId = e.Meal.Seller.SellerNavigation.BuyerId,
+                                    PhoneNumber = e.Meal.Seller.SellerNavigation.PhoneNumber,
+                                    ProfilePicture = e.Meal.Seller.SellerNavigation.ProfilePicture
+                                }
+                            }
+                        })
+                        .ToList();
+
+                    if (response == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        return Ok(response);
+                    }
+                }
+                catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
+            }
+        }
     }
 }
