@@ -41,6 +41,10 @@ namespace Food_Like.Server.Services
 
         public AuthState GetUser(string auth)
         {
+            if (auth == null)
+            {
+                return new AuthState(false);
+            }
             var authUser = new Auth<dynamic>(auth);
             var user = _dbContext.Buyer.ToList().Find(user => user.Email == authUser.Email && user.EncryptedPassword == authUser.EncryptedPassword);
             if (user != null)
@@ -55,6 +59,7 @@ namespace Food_Like.Server.Services
 
         public AuthState GetUser(dynamic auth)
         {
+           
             var user = _dbContext.Buyer.Include(e => e.Seller).ToList().Find(user => user.Email == auth.Email && user.EncryptedPassword == auth.EncryptedPassword);
             if (user != null)
             {
