@@ -67,12 +67,18 @@
 <form class="form-signin">
     <input type="text" class="form-control mb-2" placeholder="Titel" @bind="titel" required autofocus>
 
-    <textarea type="text" class="form-control mb-2" rows="10" @bind="mealDescription" required>
-    Description
-    </textarea>
+    <textarea type="text" class="form-control mb-2" rows="10" @bind="mealDescription" required>Description</textarea>
 
-    <input type="text" class="form-control mb-2" placeholder="Ingridients seperate with komma" @bind="ingridients" required>
-
+    <input type="text" class="form-control mb-2" placeholder="Ingridients - seperate by comma" @bind="ingridients" required>
+    
+    <label for="category">Meal Category</label> <br />
+    <select id="category" @bind="category" class="form-control">
+        <option selected value="2">Danish</option>
+        <option value="1">Italian</option>
+        <option value="3">European</option>
+        <option value="4">American</option>
+        <option value="5">Asian</option>
+    </select> <br />
     <label for="pickupfrom">Pick up from</label>
     <input id="pickupfrom" type="datetime-local" class="form-control mb-2" @bind-value="pickupFrom" required>
 
@@ -108,7 +114,7 @@
     const string credentials = "credentials";
     private string token { get; set; }
 
-
+    private int category { get; set; }
     private string titel { get; set; }
     private sbyte portions { get; set; }
     private decimal portionPrice { get; set; }
@@ -167,7 +173,14 @@
             Ingridients = ingridients,
             PickupFrom = pickupFrom,
             PickupTo = pickupTo,
-            MealPicture = mealPicture
+            MealPicture = mealPicture,
+            Mealcategory = new List<Mealcategory>
+            {
+                new Mealcategory
+                {
+                    CategoryId = category
+                }
+            }
         };
 
         Auth<Meal> authRequest = new Auth<Meal>(token)

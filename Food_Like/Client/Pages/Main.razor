@@ -123,32 +123,32 @@
         </div>
     </div>
     <div class="d-flex flex-row justify-content-between w-100 my-3">
-        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(0)">
-            <div class="rounded p-1 px-2" style="@((selectedCategory == 0) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
-                <img src="assets/americanIcon.png" />
-            </div>
-            <small class="w-100 text-center">Dansih</small>
-        </div>
-        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(1)">
-            <div class="rounded p-1 px-2" style="@((selectedCategory == 1) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
-                <img src="assets/americanIcon.png" />
-            </div>
-            <small class="w-100 text-center">Asian</small>
-        </div>
         <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(2)">
             <div class="rounded p-1 px-2" style="@((selectedCategory == 2) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
                 <img src="assets/americanIcon.png" />
             </div>
-            <small class="w-100 text-center">European</small>
+            <small class="w-100 text-center">Dansih</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(5)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 5) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">Asian</small>
         </div>
         <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(3)">
             <div class="rounded p-1 px-2" style="@((selectedCategory == 3) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
                 <img src="assets/americanIcon.png" />
             </div>
-            <small class="w-100 text-center">American</small>
+            <small class="w-100 text-center">European</small>
         </div>
         <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(4)">
             <div class="rounded p-1 px-2" style="@((selectedCategory == 4) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
+                <img src="assets/americanIcon.png" />
+            </div>
+            <small class="w-100 text-center">American</small>
+        </div>
+        <div class="d-flex flex-column align-items-center" @onclick="() => SelectCategory(1)">
+            <div class="rounded p-1 px-2" style="@((selectedCategory == 1) ? "background-color: var(--secondaryBg);" :  "background-color: var(--highlight);")">
                 <img src="assets/americanIcon.png" />
             </div>
             <small class="w-100 text-center">Italian</small>
@@ -195,7 +195,7 @@ else
                                 <img height="20" width="20" src="assets/Star.png" />
                                 @if (meal.Rating == -1)
                                 {
-                                    <p class="m-0" style="color: #FFC700;">3</p>
+                                    <p class="m-0" style="color: #FFC700;">Non</p>
                                 } else
                                 {
                                     <p class="m-0" style="color: #FFC700;">@meal.Rating</p>
