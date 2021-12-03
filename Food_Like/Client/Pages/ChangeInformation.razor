@@ -1,0 +1,221 @@
+﻿@page "/changeinformation"
+@using Food_Like.Shared
+@inject HttpClient Http
+@inject NavigationManager NavManager
+@using Tewr.Blazor.FileReader
+@inject IFileReaderService FileReaderService
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@using System.Text.Json.Serialization
+@using System.Text.Json
+@using System.Text
+
+<style>
+
+
+    .createbtn {
+        width: 190px;
+        height: 56px;
+    }
+
+    .centerdiv {
+        display: flex;
+        justify-content: center;
+        margin: 5px;
+    }
+
+    .createpicture {
+        height: 118px;
+        width: 118px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .profilepicture {
+        height: 118px;
+        width: 118px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 100%;
+    }
+</style>
+
+<div class="createpicture">
+    <input type="file" id="file-upload" style="display: none" @ref="inputTypeFileElement" @onchange="HandleUpload" />
+    <label for="file-upload" style="cursor: pointer">
+        @if (myProfilePictureDecoded != null)
+        {
+            <img src="@myProfilePictureDecoded" class="profilepicture" alt="Profile Picture">}
+    </label>
+</div>
+
+
+<div class="centerdiv">
+    <form class="form-create ">
+        <label for="inputEmail" class="">Email address</label>
+        <input @bind="email" type="email" id="inputEmail" class="form-control mb-2 shadow-sm" placeholder="Email address" required autofocus>
+
+        <label for="inputPassword" class="">Password</label>
+        <input @bind="password" type="password" id="inputPassword" class="form-control mb-2 shadow-sm" placeholder="Password" required>
+
+
+        <label for="inputFirstname" class="">Firstname</label>
+        <input @bind="firstname" type="text" id="inputFirstname" class="form-control mb-2 shadow-sm" placeholder="Firstname" required autofocus>
+
+        <label for="inputSurnamee" class="">Surname</label>
+        <input @bind="surname" type="text" id="inputSurname" class="form-control mb-2 shadow-sm" placeholder="Surname" required autofocus>
+
+        <label for="inputNumber" class="">Mobile</label>
+        <input @bind="mobile" type="number" id="inputNumber" class="form-control mb-2 shadow-sm" placeholder="Mobile" required autofocus>
+
+        @if (userIsSeller)
+        {
+            <label for="address">Address</label>
+            <input type="text" id="address" class="form-control mb-2" placeholder="Address" @bind="line1" required autofocus>
+            <label for="city">City</label>
+            <input type="text" id="city" class="form-control" placeholder="City" @bind="city" required>
+        }
+        @if (errorMessage.Length > 0)
+        {
+            <div class="alert alert-danger" role="alert">
+                <p>@errorMessage</p>
+            </div>}
+        <button class="mt-4 btn btn-lg btn-primary btn-block createbtn" type="button" @onclick="submitChange">Save</button>
+    </form>
+</div>
+
+@code {
+
+    private ElementReference inputTypeFileElement;
+
+    private string errorMessage = "";
+    private string token { get; set; }
+
+    private Buyer user { get; set; }
+    private bool userIsSeller = false;
+    private Buyer newUserInformation { get; set; }
+
+    private string email { get; set; }
+    private string password { get; set; }
+    private string firstname { get; set; }
+    private string surname { get; set; }
+    private string mobile { get; set; }
+    private byte[] profilePicture = new byte[] { };
+    private string line1 { get; set; }
+    private string city { get; set; }
+    private byte[] kitchenPicture { get; set; }
+
+    private string myProfilePictureDecoded { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        token = await localStore.GetItemAsync<string>("credentials");
+
+
+        var userRequest = new HttpRequestMessage(HttpMethod.Get, "api/user");
+        userRequest.Headers.Add("Auth", token);
+
+        var response = await Http.SendAsync(userRequest);
+        if (response.IsSuccessStatusCode)
+        {
+            user = await response.Content.ReadFromJsonAsync<Buyer>();
+            email = user.Email;
+            password = user.EncryptedPassword;
+            firstname = user.FirstName;
+            surname = user.LastName;
+            mobile = user.PhoneNumber;
+            profilePicture = user.ProfilePicture;
+            var base64 = Convert.ToBase64String(user.ProfilePicture);
+            myProfilePictureDecoded = String.Format("data:image/jpg;base64,{0}", base64);
+
+            if (user.Seller != null)
+            {
+                userIsSeller = true;
+                kitchenPicture = user.Seller.KitchenPicture;
+                line1 = user.Seller.Address.Line1 + " " + user.Seller.Address.Line2;
+                city = user.Seller.Address.City;
+            }
+            else
+            {
+                userIsSeller = false;
+            }
+        }
+        else
+        {
+            errorMessage = "Error getting account information";
+        }
+    }
+
+    private async Task HandleUpload()
+    {
+        foreach (var file in await FileReaderService.CreateReference(inputTypeFileElement).EnumerateFilesAsync())
+        {
+            if (file != null)
+            {
+                var fileInfo = await file.ReadFileInfoAsync();
+                using (var ms = await file.CreateMemoryStreamAsync(4 * 1024))
+                {
+                    profilePicture = new byte[fileInfo.Size];
+                    profilePicture = ms.ToArray();
+                    var base64 = Convert.ToBase64String(profilePicture);
+                    myProfilePictureDecoded = String.Format("data:image/jpg;base64,{0}", base64);
+                }
+            }
+        }
+    }
+
+    private async void submitChange()
+    {
+        errorMessage = "";
+        if (userIsSeller)
+        {
+            newUserInformation = new Buyer()
+            {
+                FirstName = firstname,
+                LastName = surname,
+                Email = email,
+                PhoneNumber = mobile,
+                ProfilePicture = profilePicture,
+                EncryptedPassword = password,
+                Seller = new Seller()
+                {
+                    KitchenPicture = kitchenPicture,
+                    Address = new Address()
+                    {
+                        Line1 = line1,
+                        City = city
+                    }
+                }
+            };
+        }
+        else
+        {
+            newUserInformation = new Buyer()
+            {
+                FirstName = firstname,
+                LastName = surname,
+                Email = email,
+                PhoneNumber = mobile,
+                ProfilePicture = profilePicture,
+                EncryptedPassword = password,
+            };
+        }
+
+        var editRequest = new HttpRequestMessage(HttpMethod.Post, "api/auth/edit");
+        editRequest.Headers.Add("Auth", token);
+        editRequest.Content = new StringContent(JsonSerializer.Serialize(newUserInformation), Encoding.UTF8, "application/json");
+
+        var editResponse = await Http.SendAsync(editRequest);
+
+        if (editResponse.IsSuccessStatusCode == true)
+        {
+            await localStore.SetItemAsync("credentials", email + "-.-" + password);
+            NavManager.NavigateTo("/myprofile");
+        }
+        else
+        {
+            errorMessage = "Error";
+            StateHasChanged();
+        }
+
+    } }
+

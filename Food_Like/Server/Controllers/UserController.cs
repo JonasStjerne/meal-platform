@@ -41,6 +41,7 @@ namespace Food_Like.Server.Controllers
                             return Ok(context.Buyer
                                 .Where(buyer => buyer.BuyerId == authState.User.BuyerId)
                                 .Include(e => e.Seller)
+                                .ThenInclude(e => e.Address)
                                 .First()
                             );
                     
