@@ -79,5 +79,75 @@ namespace Food_Like.Server.Controllers
             }
 
         }
+
+        [HttpPost("edit")]
+        public async Task<ActionResult<Buyer>> Edit([FromHeader] string Auth, Buyer newInformation)
+        {
+            using (var context = new foodlikeContext())
+            {
+                string token;
+                //Standard check for authorized access
+                var userService = new UserService(context);
+                var authState = userService.GetUser(Auth);
+
+                if (authState.FoundUser == false)
+                {
+                    return Unauthorized();
+                }
+
+                try
+                {
+                    //Map relevant data to only allowed relevant data change
+                    if (userService.UserIsSeller(authState))
+                    {
+                        context.Remove(context.Buyer.Include(e => e.Seller).ThenInclude(e => e.Address).Single(e => e.BuyerId == authState.User.BuyerId));
+                        Buyer newUserInformation = new Buyer()
+                        {
+                            BuyerId = authState.User.BuyerId,
+                            FirstName = newInformation.FirstName,
+                            LastName = newInformation.LastName,
+                            Email = newInformation.Email,
+                            PhoneNumber = newInformation.PhoneNumber,
+                            ProfilePicture = newInformation.ProfilePicture,
+                            EncryptedPassword = newInformation.EncryptedPassword,
+                            Seller = new Seller()
+                            {
+                                KitchenPicture = newInformation.Seller.KitchenPicture,
+                                Address = new Address()
+                                {
+                                    Line1 = newInformation.Seller.Address.Line1,
+                                    City = newInformation.Seller.Address.City
+                                }
+                            }
+                        };
+                        token = newInformation.Email + "-.-" + newInformation.EncryptedPassword;
+                        context.Buyer.Add(newUserInformation);
+                    } else
+                    {
+                        context.Remove(context.Buyer.Single(e => e.BuyerId == authState.User.BuyerId));
+                        Buyer newUserInformation = new Buyer()
+                        {
+                            BuyerId = authState.User.BuyerId,
+                            FirstName = newInformation.FirstName,
+                            LastName = newInformation.LastName,
+                            Email = newInformation.Email,
+                            PhoneNumber = newInformation.PhoneNumber,
+                            ProfilePicture = newInformation.ProfilePicture,
+                            EncryptedPassword = newInformation.EncryptedPassword,
+                        };
+                        token = newInformation.Email + "-.-" + newInformation.EncryptedPassword;
+
+                        context.Buyer.Add(newUserInformation);
+                    }
+                    context.SaveChanges();
+                    return Ok(token);
+                }
+                catch (Exception exp)
+                {
+                    return BadRequest(exp);
+                }
+
+            }
+        }
     }
 }
