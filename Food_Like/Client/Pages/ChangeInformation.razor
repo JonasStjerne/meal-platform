@@ -37,8 +37,17 @@
         margin-right: auto;
         border-radius: 100%;
     }
-</style>
 
+    .back {
+        position: absolute;
+        left: 20px;
+        top: 19px;
+        z-index: 10;
+    }
+</style>
+<div class="back">
+    <a href="/myprofile"> <img style=" height: 30px; width: 30px;" src="/assets/back.png" /> </a>
+</div>
 <div class="createpicture">
     <input type="file" id="file-upload" style="display: none" @ref="inputTypeFileElement" @onchange="HandleUpload" />
     <label for="file-upload" style="cursor: pointer">
