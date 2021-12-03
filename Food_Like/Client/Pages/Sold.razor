@@ -21,6 +21,10 @@
 {
     <p>Loading</p>
 }
+else if (myMeals.Count == 0)
+{
+    <p class="w-100 text-center">No sold meals found, that have exeeded pickup time</p>
+}
 else
 {
     @foreach (var meal in myMeals)
@@ -64,7 +68,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        var token = await localStore.GetItemAsync<string>("credentials"); 
+        var token = await localStore.GetItemAsync<string>("credentials");
         var requestMyReservations = new HttpRequestMessage(HttpMethod.Get, "api/user/mysoldmeals");
         requestMyReservations.Headers.Add("Auth", token);
 

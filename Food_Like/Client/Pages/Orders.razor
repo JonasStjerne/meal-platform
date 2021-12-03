@@ -20,6 +20,9 @@
 @if (mealReservations == null)
 {
     <p>Loading</p>
+} else if (mealReservations.Count == 0)
+{
+    <p class="w-100 text-center">No meal orders found, that have exeeded pickup time</p>
 }
 else
 {
