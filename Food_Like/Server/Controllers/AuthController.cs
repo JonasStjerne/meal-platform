@@ -100,31 +100,27 @@ namespace Food_Like.Server.Controllers
                     //Map relevant data to only allowed relevant data change
                     if (userService.UserIsSeller(authState))
                     {
-                        context.Remove(context.Buyer.Include(e => e.Seller).ThenInclude(e => e.Address).Single(e => e.BuyerId == authState.User.BuyerId));
-                        Buyer newUserInformation = new Buyer()
-                        {
-                            BuyerId = authState.User.BuyerId,
-                            FirstName = newInformation.FirstName,
-                            LastName = newInformation.LastName,
-                            Email = newInformation.Email,
-                            PhoneNumber = newInformation.PhoneNumber,
-                            ProfilePicture = newInformation.ProfilePicture,
-                            EncryptedPassword = newInformation.EncryptedPassword,
-                            Seller = new Seller()
-                            {
-                                KitchenPicture = newInformation.Seller.KitchenPicture,
-                                Address = new Address()
-                                {
-                                    Line1 = newInformation.Seller.Address.Line1,
-                                    City = newInformation.Seller.Address.City
-                                }
-                            }
-                        };
+                        var dbData = context.Buyer.Include(e => e.Seller).ThenInclude(e => e.Address).Single(e => e.BuyerId == authState.User.BuyerId);
+
+
+                        dbData.BuyerId = authState.User.BuyerId;
+                        dbData.FirstName = newInformation.FirstName;
+                        dbData.LastName = newInformation.LastName;
+                        dbData.Email = newInformation.Email;
+                        dbData.PhoneNumber = newInformation.PhoneNumber;
+                        dbData.ProfilePicture = newInformation.ProfilePicture;
+                        dbData.EncryptedPassword = newInformation.EncryptedPassword;
+
+                        dbData.Seller.KitchenPicture = newInformation.Seller.KitchenPicture;
+
+                        dbData.Seller.Address.Line1 = newInformation.Seller.Address.Line1;
+                        dbData.Seller.Address.City = newInformation.Seller.Address.City;
+
+                        context.SaveChanges();
                         token = newInformation.Email + "-.-" + newInformation.EncryptedPassword;
-                        context.Buyer.Add(newUserInformation);
                     } else
                     {
-                        context.Remove(context.Buyer.Single(e => e.BuyerId == authState.User.BuyerId));
+                        
                         Buyer newUserInformation = new Buyer()
                         {
                             BuyerId = authState.User.BuyerId,
@@ -135,12 +131,12 @@ namespace Food_Like.Server.Controllers
                             ProfilePicture = newInformation.ProfilePicture,
                             EncryptedPassword = newInformation.EncryptedPassword,
                         };
-                        token = newInformation.Email + "-.-" + newInformation.EncryptedPassword;
-
-                        context.Buyer.Add(newUserInformation);
+                        var data = context.Buyer.Single(e => e.BuyerId == authState.User.BuyerId);
+                        data = newUserInformation;
+                        context.SaveChanges();
+                        token = newInformation.Email + "-.-" + newInformation.EncryptedPassword; 
                     }
-                    context.SaveChanges();
-                    return Ok(token);
+                    return Ok(newInformation);
                 }
                 catch (Exception exp)
                 {
