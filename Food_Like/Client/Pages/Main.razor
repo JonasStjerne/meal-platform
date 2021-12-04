@@ -172,6 +172,10 @@ else
 {
     <div class="container">
         <div class="row">
+            @if (mealsAndDistance.Count == 0)
+            {
+                <p>No meals in this category</p>
+            } 
             @foreach (var meal in mealsAndDistance)
             {
                 var base64 = Convert.ToBase64String(meal.Seller.SellerNavigation.ProfilePicture);
