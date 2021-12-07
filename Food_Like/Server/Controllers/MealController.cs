@@ -168,7 +168,6 @@ namespace Food_Like.Server.Controllers
                     meals = context.Meal.Where(e => e.PickupTo > DateTime.Now.AddMinutes(-30)).ToList();
                 }
                 List<Meal> mealdistance = new List<Meal>();
-                List<dynamic> test = new List<dynamic>();
                 foreach (var meal in meals)
                 {
                     Seller seller = context.Seller.AsNoTracking().Include(e => e.SellerNavigation).Where(e => e.SellerId == meal.SellerId).First();
