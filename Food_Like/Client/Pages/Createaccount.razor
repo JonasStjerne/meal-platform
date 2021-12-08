@@ -101,9 +101,8 @@
             if (file != null)
             {
                 var fileInfo = await file.ReadFileInfoAsync();
-                using (var ms = await file.CreateMemoryStreamAsync(4 * 1024))
+                using (var ms = await file.CreateMemoryStreamAsync((int) fileInfo.Size))
                 {
-                    profilePicture = new byte[fileInfo.Size];
                     profilePicture = ms.ToArray();
                     var base64 = Convert.ToBase64String(profilePicture);
                     profilePictureSrc = String.Format("data:image/jpg;base64,{0}", base64);
