@@ -41,7 +41,7 @@ namespace Food_Like.Server.Services
 
         public AuthState GetUser(string auth)
         {
-            if (auth == null)
+            if (auth.Split("-.-").Count() != 2)
             {
                 return new AuthState(false);
             }
