@@ -24,8 +24,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Spagetti w/chicken', 5, 20,
 "I'll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.",
 'Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/Spaghettichicken.png')
 );
 
@@ -37,8 +37,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Mushroom Carbonara', 2, 10,
 "Mushrooms take the place of the traditional cured pork in this super-satisfying vegetarian carbonara recipe.",
 'Mushrooms,parsley, egg, shallots,parmesan,Garlic,pasta',
-'2021-1-20 18:00:00',
-'2021-1-20 18:30:00',
+'2022-2-20 18:00:00',
+'2022-2-20 18:30:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/MushroomCarbonara.png')
 );
 
@@ -50,8 +50,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Rigatoni With Fennel and Anchovies', 3, 30,
 "Something truly magical happens when fennel, garlic, and anchovies get caramelized together.",
 'Pasra,Fennel bulbs, anchovy, mint leaves,orange,Garlic,lemon,chicken',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/PastaAnchovies.png')
 );
 
@@ -63,8 +63,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Spagetti w/beef', 2, 30,
 "I'll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.",
 'Spaghetti,Tomato, Mozzarella, beef,Balsamic,Garlic,Rosemary,Pesto',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/Spaghettibeef.png')
 );
 
@@ -76,8 +76,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Spagetti w/meatballs', 6, 40,
 "I'll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.",
 'Spaghetti,Tomato, Mozzarella, mealballs,Balsamic,Garlic,Rosemary,Pesto',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/SpaghettiMeatballs.png')
 );
 
@@ -89,8 +89,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Chicken & tofu noodle soup', 5, 20,
 "Fragrant and colourful, also referred to as bean curd, tofu is a good source of protein, calcium and phosphorus, all of which are great for bones. It’s also packed with manganese and thiamin.",
 'shallots,garlic, ginger, Chicken thighs,star anise,rice noodles,coriander,tofu',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/Chickentofu.png')
 );
 
@@ -102,8 +102,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'South Asian chicken curry', 4, 25,
 "This curry over-delivers on big, bold flavour. Served with fluffy rice to soak up the lovely creamy coconut base, plus a good hit of protein from the tender chicken.",
 'pebers,garlic, ginger, Chicken thighs,star anise,rice noodles,coriander,tofu',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/Asianchicken.png')
 );
 
@@ -115,8 +115,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Frikadeller w/potatoes', 4, 34,
 "I'll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.",
 'Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/frikadeller.png')
 );
 
@@ -128,8 +128,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Boller i karry', 7, 20,
 "I'll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.",
 'Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/bollerkarry.png')
 );
 
@@ -141,8 +141,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Burger', 2, 15,
 "I'll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.",
 'Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/burger.png')
 );
 
@@ -154,8 +154,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Tacos', 6, 50,
 "I'll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.",
 'Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/tacos.png')
 );
 
@@ -167,8 +167,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Paella', 8, 22,
 "I'll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.",
 'Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/paella.png')
 );
 
@@ -180,8 +180,8 @@ INSERT INTO Meal( SellerId,Titel,Portions,PortionPrice,MealDescription,Ingridien
 VALUES (@hanne_id, 'Meat pie', 3, 25,
 "I'll be making this delicious dinner. I’ve made it many times before and all the ingridients will be fresh. The chicken is marinaded in garlic and rosemary The pastas are fresh but not homemade.",
 'Spaghetti,Tomato, Mozzarella, Chicken Breast,Balsamic,Garlic,Rosemary,Pesto',
-'2021-1-20 19:00:00',
-'2021-1-20 20:00:00',
+'2022-2-20 19:00:00',
+'2022-2-20 20:00:00',
 LOAD_FILE('/Users/Frederikke/Projects/P3/Food_Like/Client/wwwroot/assets/pie.png')
 );
 
