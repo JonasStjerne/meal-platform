@@ -120,20 +120,17 @@ namespace Food_Like.Server.Controllers
                         token = newInformation.Email + "-.-" + newInformation.EncryptedPassword;
                     } else
                     {
-                        
-                        Buyer newUserInformation = new Buyer()
-                        {
-                            BuyerId = authState.User.BuyerId,
-                            FirstName = newInformation.FirstName,
-                            LastName = newInformation.LastName,
-                            Email = newInformation.Email,
-                            PhoneNumber = newInformation.PhoneNumber,
-                            ProfilePicture = newInformation.ProfilePicture,
-                            EncryptedPassword = newInformation.EncryptedPassword,
-                        };
-                        var data = context.Buyer.Single(e => e.BuyerId == authState.User.BuyerId);
-                        data = newUserInformation;
+                        var dbData = context.Buyer.Single(e => e.BuyerId == authState.User.BuyerId);
+
+                        dbData.BuyerId = authState.User.BuyerId;
+                        dbData.FirstName = newInformation.FirstName;
+                        dbData.LastName = newInformation.LastName;
+                        dbData.Email = newInformation.Email;
+                        dbData.PhoneNumber = newInformation.PhoneNumber;
+                        dbData.ProfilePicture = newInformation.ProfilePicture;
+                        dbData.EncryptedPassword = newInformation.EncryptedPassword;
                         context.SaveChanges();
+                        Console.WriteLine("Edited non seller");
                         token = newInformation.Email + "-.-" + newInformation.EncryptedPassword; 
                     }
                     return Ok(newInformation);
