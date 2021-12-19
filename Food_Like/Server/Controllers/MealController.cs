@@ -34,9 +34,17 @@ namespace Food_Like.Server.Controllers
 
                 if (result != null)
                 {
-                    // select avg(rating) from reviews where mealId in (select mealId from meal where sellerID = meal.sellerId)
-                    var rating = context.Review.Join(context.Meal, review => review.MealId, meal => meal.MealId, (review, meal) => new { ReviewId = review.ReviewId, Rating = review.Rating, MealId = meal.MealId, SellerId = meal.SellerId }).Where(r => r.SellerId == result.SellerId).Average(r => r.Rating);
-                    result.Seller.Rating = (decimal)rating;
+                    try
+                    {
+                        // select avg(rating) from reviews where mealId in (select mealId from meal where sellerID = meal.sellerId)
+                        var rating = context.Review.Join(context.Meal, review => review.MealId, meal => meal.MealId, (review, meal) => new { ReviewId = review.ReviewId, Rating = review.Rating, MealId = meal.MealId, SellerId = meal.SellerId }).Where(r => r.SellerId == result.SellerId).Average(r => r.Rating);
+                        result.Seller.Rating = (decimal)rating;
+                    }
+                    catch
+                    {
+                        // if no reviews exists, an InvalidOperationException is thrown - set rating to 0
+                        result.Seller.Rating = 0;
+                    }                    
 
                     var reserved = context.Mealorder.Where(m => m.MealId == result.MealId).Sum(m => m.MealId);
                     result.Reserved = reserved;

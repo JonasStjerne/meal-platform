@@ -124,25 +124,33 @@ else
     private string sellerPic = "";
     private string kitchenPic = "";
 
-    
+
 
     protected async override Task OnInitializedAsync()
     {
-        
+
 
         var response = await Http.GetAsync("api/user/" + sellerId.ToString() + "/ratings");
         if (response.IsSuccessStatusCode)
         {
             reviews = await response.Content.ReadFromJsonAsync<List<Review>>();
 
-            int sum = 0;
-
-            foreach (var review in reviews)
+            if (reviews.Count > 0)
             {
-                sum = sum + review.Rating;
-            }
 
-            avgRating = sum / reviews.Count;
+                int sum = 0;
+
+                foreach (var review in reviews)
+                {
+                    sum = sum + review.Rating;
+                }
+
+                avgRating = sum / reviews.Count;
+            }
+            else
+            {
+                avgRating = 0;
+            }
         }
 
         response = await Http.GetAsync("api/user/" + sellerId.ToString());
