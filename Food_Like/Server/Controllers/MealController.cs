@@ -180,7 +180,7 @@ namespace Food_Like.Server.Controllers
                 {
                     Seller seller = context.Seller.AsNoTracking().Include(e => e.SellerNavigation).Where(e => e.SellerId == meal.SellerId).First();
                     Address selleraddress = context.Address.AsNoTracking().Where(e => e.AddressId == seller.AddressId).First();
-                    string response = await client.GetStringAsync(string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?destinations={0}&origins={1}&key=AIzaSyCcdwwvHneJhBnSCxGv1Ik3BOqDWTG0BT0", selleraddress.Line1+selleraddress.Line2+selleraddress.City, location));
+                    string response = await client.GetStringAsync(string.Format("https://maps.googleapis.com/maps/api/distancematrix/json?destinations={0}&origins={1}&key={API_KEY}", selleraddress.Line1+selleraddress.Line2+selleraddress.City, location));
                     var reponseDeserialized = JsonConvert.DeserializeObject<dynamic>(response);
                     mealdistance.Add(
                         new Meal {
